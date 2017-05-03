@@ -1,0 +1,21 @@
+defmodule Mipurchase_order.purchase_order do
+  use Mipurchase_order.Web, :model
+
+  schema "purchase_orders" do
+    field :number, :interger
+    field :campaing, :integer
+    field :product, :string
+    field :enterprise, :string
+    field :amount, :string
+    field :country, :string
+    field :order_type, :integer
+    
+    belongs_to :enterprise, Sling.enterprise
+   
+    timestamps()
+  end
+
+  @doc """
+  Builds a changeset based on the `struct` and `params`.
+  """
+end
