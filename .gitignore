@@ -6,3 +6,5 @@ erl_crash.dump
 
 # logs
 *.log
+
+/config/prod.secret.exs
