@@ -1,10 +1,10 @@
-defmodule Micampaing.campaing do
-  use Micampaing.Web, :model
+defmodule Micampaings.Campaings do
+  use Micampaings.Web, :model
 
   schema "campaings" do
     field :name, :string
     field :permalink, :integer
-    field :enterprise, :integer
+  
     belongs_to :enterprise, Sling.enterprise
     has_many :offer, Sling.offer
 
@@ -14,4 +14,9 @@ defmodule Micampaing.campaing do
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
+  def changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:name])
+  end
+
 end

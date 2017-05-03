@@ -1,5 +1,5 @@
-defmodule Mipurchase_order.purchase_order do
-  use Mipurchase_order.Web, :model
+defmodule Mipurchase_orders.purchase_order do
+  use Mipurchase_orders.Web, :model
 
   schema "purchase_orders" do
     field :number, :interger
@@ -18,4 +18,9 @@ defmodule Mipurchase_order.purchase_order do
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
+
+  def changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:campaing, :product, :enterprise, :amount, :country, :order_type])
+  end
 end

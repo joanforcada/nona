@@ -1,10 +1,8 @@
-defmodule Micountry_offer.country_offer do
-  use Micountry_offer.Web, :model
+defmodule Micountries_offers.CountryOffers do
+  use Micountries_offers.Web, :model
 
-  schema "country_offers" do
-    field :permalink, :integer
-    field :id_country, :integer
-  
+  schema "countries_offers" do
+       
     belong_to :offer, Sling.offer
     belong_to :country, Sling.country
 
@@ -14,4 +12,5 @@ defmodule Micountry_offer.country_offer do
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
+
 end
