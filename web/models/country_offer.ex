@@ -1,6 +1,7 @@
 defmodule Tino.CountryOffer do
   use Tino.Web, :model
 
+
   schema "countries_offers" do
 
     belongs_to :offer, Tino.Offer
