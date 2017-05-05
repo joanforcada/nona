@@ -17,7 +17,12 @@ config :tino, Tino.Endpoint,
   cache_static_manifest: "priv/static/manifest.json"
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger,
+  level: :error,
+  handle_otp_reports: false,
+  handle_sasl_reports: false
+
+config :mona, tmp_path: "/home/epdp/tino/tmp"               # tmp local to project folder
 
 # ## SSL Support
 #
@@ -48,7 +53,7 @@ config :logger, level: :info
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start the server for all endpoints:
 #
-#     config :phoenix, :serve_endpoints, true
+config :phoenix, :serve_endpoints, true
 #
 # Alternatively, you can configure exactly which server to
 # start per endpoint:
