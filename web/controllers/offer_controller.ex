@@ -47,5 +47,4 @@ alias Tino.Offer
       #  |> render(Tino.ChangesetView, "error.json", changeset: changeset) 
 
   end
-
 end
