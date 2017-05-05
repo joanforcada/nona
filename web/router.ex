@@ -15,9 +15,11 @@ defmodule Tino.Router do
 
   scope "/", Tino do
     pipe_through :browser # Use the default browser stack
+    get "/ping", PingController, :ping
 
     get "/", PageController, :index
   end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", Tino do
