@@ -24,7 +24,15 @@ config :logger,
   handle_otp_reports: false,
   handle_sasl_reports: false
 
-config :mona, tmp_path: "/home/epdp/tino/tmp"               # tmp local to project folder
+config :mona, tmp_path: "/home/epdp/tino/tmp"
+
+config :tino, Tino.Repo,
+  adapter: Ecto.Adapters.MySQL,
+  username: "epdp",
+  password: "elpulgardb",
+  database: "nestor_production",
+  hostname: "104.155.61.62",
+  pool_size: 10             # tmp local to project folder
 
 # ## SSL Support
 #
