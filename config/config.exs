@@ -9,6 +9,14 @@ use Mix.Config
 config :tino,
   ecto_repos: [Tino.Repo]
 
+  # Tell Alfred about us.
+config :alfred, :app, :tino
+
+# Cipher keys.
+config :cipher, keyphrase: "unomasuno",
+                ivphrase: "memomimamamemima",
+                magic_token: "monikakogonzalezz"
+
 # Configures the endpoint
 config :tino, Tino.Endpoint,
   url: [host: "localhost"],
@@ -21,6 +29,13 @@ config :tino, Tino.Endpoint,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
+
+config :bottler, :params, [servers: [gce_project: "lolamaster-1314", match: "^tino-*"],
+                          remote_user: "epdp",
+                          cookie: "monikako",
+                          forced_branch: "master",
+                          ship: [timeout: 300_000,
+                                 method: :scp]]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

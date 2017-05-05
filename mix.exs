@@ -37,6 +37,9 @@ defmodule Tino.Mixfile do
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
+     {:alfred, git: "git@github.com:admanmedia/alfred.git"},
+     {:alfred_http, git: "git@github.com:admanmedia/alfred_http.git"},
+     {:bottler, github: "rubencaro/bottler"},
      {:cowboy, "~> 1.0"}]
   end
 
