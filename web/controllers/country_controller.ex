@@ -1,19 +1,51 @@
 defmodule Tino.CountryController do
   use Tino.Web, :controller
 
-  def new do
-    
-  end
+  alias Tino.Country
 
-  def create do
+  def create(conn, %{"countries" => purchase_orders_params}) do
+     #permalink = "11111113" #Guardian.Plug.current_resource(conn)
+     changeset = Country.changeset(%Country{}, country_params)
 
-  end
+     case Repo.insert(changeset) do
+       {:ok, country_params} ->
 
-  def edit do
+         conn
+         |> put_status(:created)
+         |> render("show.json", country: country) #retornes plantilla
 
-  end
+       {:error, changeset} ->
+         conn
+         |> put_status(:unprocessable_entity)
+         |> render(Tino.ChangesetView, "error.json", changeset: changeset)
+     end
 
-  def update do
+   end
 
-  end
+   def show (conn, %{"id" => id}) do
+       country = Repo.get!(Country, id)
+       render("show.json", country: country)
+
+   end
+
+   def update (conn, %{"id" => id, "countries" => country_params}) do
+
+      country = Repo.get!(Country, id)
+      changeset = Country.changeset(%Country{}, country_params)
+
+
+     Repo.update(changeset)
+       #{:ok, campaign} ->
+
+       #  conn
+       #  |> put_status(:created)
+       #  |> render("show.json", campaign: campaign) #retornes plantilla
+
+       #{:error, changeset} ->
+       #  conn
+       #  |> put_status(:unprocessable_entity)
+       #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
+
+   end
+
 end
