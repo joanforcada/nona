@@ -1,10 +1,20 @@
 /_build
 /cover
 /deps
+/db
 erl_crash.dump
 *.ez
 
 # logs
 *.log
+
+# Static artifacts
+/node_modules
+
+/config/private.exs
+
+# bottler stuff
+/rel
+/tmp
 
 /config/prod.secret.exs
