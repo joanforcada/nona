@@ -2,6 +2,7 @@
   "alfred_http": {:git, "git@github.com:admanmedia/alfred_http.git", "1ab9a980932469dba4765cb17ac5a5a01a91ad4b", []},
   "bottler": {:git, "https://github.com/rubencaro/bottler.git", "5a6fadd55c09d8c09caa0e17704daa8e2898c24c", []},
   "certifi": {:hex, :certifi, "1.0.0", "1c787a85b1855ba354f0b8920392c19aa1d06b0ee1362f9141279620a5be2039", [:rebar3], []},
+  "cipher": {:hex, :cipher, "1.3.0", "f0ab87bb5c89a284f24a997cd40acbdfef2f2fa2acd7dc0abcd487c7319c8f43", [:mix], [{:plug, ">= 1.1.0", [hex: :plug, optional: false]}, {:poison, "~> 2.0", [hex: :poison, optional: false]}]},
   "connection": {:hex, :connection, "1.0.4", "a1cae72211f0eef17705aaededacac3eb30e6625b04a6117c1b2db6ace7d5976", [:mix], []},
   "cowboy": {:hex, :cowboy, "1.1.2", "61ac29ea970389a88eca5a65601460162d370a70018afe6f949a29dca91f3bb0", [:rebar3], [{:cowlib, "~> 1.0.2", [hex: :cowlib, optional: false]}, {:ranch, "~> 1.3.2", [hex: :ranch, optional: false]}]},
   "cowlib": {:hex, :cowlib, "1.0.2", "9d769a1d062c9c3ac753096f868ca121e2730b9a377de23dec0f7e08b1df84ee", [:make], []},

@@ -37,6 +37,8 @@ defmodule Tino.Mixfile do
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
+     {:cipher, ">= 1.1.2"},
+     {:httpoison, "~> 0.9"},
      {:alfred, git: "git@github.com:admanmedia/alfred.git"},
      {:alfred_http, git: "git@github.com:admanmedia/alfred_http.git"},
      {:bottler, github: "rubencaro/bottler"},
@@ -50,8 +52,8 @@ defmodule Tino.Mixfile do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-     "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
+    ["ecto.setup": [],
+     "ecto.reset": [],
+     "test": ["test"]]
   end
 end
