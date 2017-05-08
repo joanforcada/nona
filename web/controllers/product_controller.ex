@@ -47,20 +47,20 @@ defmodule Tino.ProductController do
        #  conn
        #  |> put_status(:unprocessable_entity)
        #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
-
+       
    end
 
    def autocomplete(conn, params) do
 
-        # for sf <- @autocomplete_fields do
-        #   like(sf, "%#{params["term"]}%")
-        # end
-        # autocomplete_fields
-        like_value = "%Seeding%"
+      term = "%#{Map.get(params, "term", "")}%"
+      # for sf <- @autocomplete_fields do
+      #   like(sf, "%#{params["term"]}%")
+      # end
+      # autocomplete_fields
 
-        query = from(p in Product, where: like(p.name, ^like_value), select: [p.name, p.code])
-        res = Repo.all(query)
-        json(conn, %{valid: true, result: res})
+      query = from(p in Product, where: like(p.name, ^term), select: [p.name, p.code])
+      res = Repo.all(query)
+      json(conn, %{valid: true, result: res})
    end
 
 
