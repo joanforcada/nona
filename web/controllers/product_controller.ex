@@ -47,7 +47,7 @@ defmodule Tino.ProductController do
        #  conn
        #  |> put_status(:unprocessable_entity)
        #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
-       
+
    end
 
    def autocomplete(conn, params) do
@@ -60,6 +60,7 @@ defmodule Tino.ProductController do
 
       query = from(p in Product, where: like(p.name, ^term), select: [p.name, p.code])
       res = Repo.all(query)
+      H.spit length(Repo.all(query))
       json(conn, %{valid: true, result: res})
    end
 
