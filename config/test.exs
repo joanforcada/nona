@@ -13,7 +13,7 @@ config :logger, level: :warn
 config :tino, Tino.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
-  password: "adman",
-  database: "development",
+  database: "rita_development",
+  password: "dbPASS",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
