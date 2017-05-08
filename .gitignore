@@ -8,3 +8,10 @@ erl_crash.dump
 *.log
 
 /config/prod.secret.exs
+
+
+/rel
+/node_modules
+/tmp
+/config/prod.secret.exs
+/config/private.exs
