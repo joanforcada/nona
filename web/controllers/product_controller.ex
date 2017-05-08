@@ -1,11 +1,11 @@
 defmodule Tino.ProductController do
   use Tino.Web, :controller
 
-  @autocomplete_fields=["name", "product_format", "code"]
+  # @autocomplete_fields = ["name", "product_format", "code"]
 
   alias Tino.Product
 
-  def create(conn, %{"product" => products_params}) do
+  def create(conn, %{"product" => product_params}) do
      permalink = "11111114" #Guardian.Plug.current_resource(conn)
      changeset = Product.changeset(%Product{}, product_params)
 
@@ -24,13 +24,13 @@ defmodule Tino.ProductController do
 
    end
 
-   def show (conn, %{"id" => id}) do
+   def show(conn, %{"id" => id}) do
        product = Repo.get!(Product, id)
        render("show.json", product: product)
 
    end
 
-   def update (conn, %{"id" => id, "product" => product_params}) do
+   def update(conn, %{"id" => id, "product" => product_params}) do
 
       product = Repo.get!(Product, id)
       changeset = Product.changeset(%Product{}, product_params)
@@ -51,29 +51,21 @@ defmodule Tino.ProductController do
    end
 
    def autocomplete(conn, params) do
-        params["term"]
 
-        autocomplete_fields
+        # for sf <- @autocomplete_fields do
+        #   like(sf, "%#{params["term"]}%")
+        # end
+        # autocomplete_fields
+        like_value = "%Seeding%"
 
+        query = from(p in Product, where: like(p.name, ^like_value), select: [p.name, p.code])
+        res = Repo.all(query)
+        json(conn, %{valid: true, result: res})
    end
 
-   #PROVA AUTOCOMPLETE
-   def autocomplete(conn, %{"id" => id}) do
-     create complete changeset
-    changeset =
-      Repo.get!(id)|> Product.changeset()
 
     # update repo and redirect accordingly
-    case Repo.update(changeset) do
-      {:ok, product} ->
-        conn
-        |> put_flash(:info, "Product completed successfully!")
-        |> render("show.json", product: product))
-      {:error, _changeset} ->
-        conn
-        |> put_flash(:error, "Product cannot be completed")
-        |> render("show.json", product: product))
-    end
+
 
 
 end

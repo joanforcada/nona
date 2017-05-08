@@ -18,6 +18,12 @@ defmodule Tino.Router do
     get "/ping", PingController, :ping
 
     get "/", PageController, :index
+
+    get "/products/autocomplete", ProductController, :autocomplete
+    get "/countries/autocomplete", CountryController, :autocomplete
+    get "/currencies/autocomplete", CurrencyController, :autocomplete
+
+
   end
 
 

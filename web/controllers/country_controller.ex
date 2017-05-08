@@ -3,12 +3,12 @@ defmodule Tino.CountryController do
 
   alias Tino.Country
 
-  def create(conn, %{"country" => purchase_orders_params}) do
+  def create(conn, %{"country" => country_params}) do
      #permalink = "11111113" #Guardian.Plug.current_resource(conn)
      changeset = Country.changeset(%Country{}, country_params)
 
      case Repo.insert(changeset) do
-       {:ok, country_params} ->
+       {:ok, country} ->
 
          conn
          |> put_status(:created)
@@ -22,13 +22,13 @@ defmodule Tino.CountryController do
 
    end
 
-   def show (conn, %{"id" => id}) do
+   def show(conn, %{"id" => id}) do
        country = Repo.get!(Country, id)
        render("show.json", country: country)
 
    end
 
-   def update (conn, %{"id" => id, "country" => country_params}) do
+   def update(conn, %{"id" => id, "country" => country_params}) do
 
       country = Repo.get!(Country, id)
       changeset = Country.changeset(%Country{}, country_params)

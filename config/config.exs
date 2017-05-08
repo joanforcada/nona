@@ -9,6 +9,8 @@ use Mix.Config
 config :tino,
   ecto_repos: [Tino.Repo]
 
+config :tino, Tino.Repo, migration_source: "tino_migrations" #Esto es una mierda figurante para que no pida la tabla schema_migrations
+
 # Configures the endpoint
 config :tino, Tino.Endpoint,
   url: [host: "localhost"],

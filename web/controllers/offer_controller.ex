@@ -22,13 +22,13 @@ alias Tino.Offer
 
   end
 
-  def show (conn, %{"id" => id}) do
+  def show(conn, %{"id" => id}) do
       offer = Repo.get!(Offer, id)
       render("show.json", offer: offer)
 
   end
 
-  def update (conn, %{"id" => id, "offer" => offers_params}) do
+  def update(conn, %{"id" => id, "offer" => offer_params}) do
 
      offer = Repo.get!(Offer, id)
      changeset = Offer.changeset(%Offer{}, offer_params)

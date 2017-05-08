@@ -37,7 +37,7 @@ config :phoenix, :stacktrace_depth, 20
 config :tino, Tino.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
-  password: "dbPASS",
-  database: "rita_development",
+  password: "adman",
+  database: "development",
   hostname: "localhost",
   pool_size: 10
