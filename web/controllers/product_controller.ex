@@ -60,7 +60,7 @@ defmodule Tino.ProductController do
 
       query = from(p in Product, where: like(p.name, ^term), select: [p.name, p.code])
       res = Repo.all(query)
-      H.spit length(Repo.all(query))
+      IO.inspect Enum.count(Repo.all(query))
       json(conn, %{valid: true, result: res})
    end
 
