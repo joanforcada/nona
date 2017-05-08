@@ -1,10 +1,11 @@
 defmodule Tino.CampaignController do
   use Tino.Web, :controller
 
-  alias Tino.Campaign
+ alias Tino.Campaign
 
  def create(conn, %{"campaign" => campaign_params}) do
     # permalink = "11111111" #Guardian.Plug.current_resource(conn)
+
     changeset = Campaign.changeset(%Campaign{}, campaign_params)
 
     case Repo.insert(changeset) do
@@ -23,6 +24,7 @@ defmodule Tino.CampaignController do
   end
 
   def show(_conn, %{"id" => id}) do
+
       campaign = Repo.get!(Campaign, id)
       render("show.json", campaign: campaign)
 

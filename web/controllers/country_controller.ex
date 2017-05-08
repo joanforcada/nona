@@ -3,7 +3,7 @@ defmodule Tino.CountryController do
 
   alias Tino.Country
 
-  def create(conn, %{"countries" => purchase_orders_params}) do
+  def create(conn, %{"country" => purchase_orders_params}) do
      #permalink = "11111113" #Guardian.Plug.current_resource(conn)
      changeset = Country.changeset(%Country{}, country_params)
 
@@ -28,7 +28,7 @@ defmodule Tino.CountryController do
 
    end
 
-   def update (conn, %{"id" => id, "countries" => country_params}) do
+   def update (conn, %{"id" => id, "country" => country_params}) do
 
       country = Repo.get!(Country, id)
       changeset = Country.changeset(%Country{}, country_params)
