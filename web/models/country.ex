@@ -6,7 +6,8 @@ defmodule Tino.Country do
     field :name, :string
     field :iso_code, :string
 
-    timestamps()
+    field :created_ts, :integer
+    field :updated_ts, :integer
   end
 
   @doc """

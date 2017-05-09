@@ -11,8 +11,8 @@ defmodule Tino.PurchaseOrder do
     belongs_to :campaign, Tino.Campaign
     belongs_to :product, Tino.Product
     belongs_to :country, Tino.Country
-
-    timestamps()
+    field :created_ts, :integer
+    field :updated_ts, :integer
   end
 
   @doc """

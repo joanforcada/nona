@@ -5,8 +5,8 @@ defmodule Tino.OfferShare do
 
     belongs_to :offer, Tino.Offer
     belongs_to :purchase_order, Tino.PurchaseOrder
-
-    timestamps()
+    field :created_ts, :integer
+    field :updated_ts, :integer
   end
 
   @doc """

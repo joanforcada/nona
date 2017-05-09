@@ -7,7 +7,8 @@ defmodule Tino.Currency do
     field :code, :string
     field :symbol, :string
 
-    timestamps()
+    field :created_ts, :integer
+    field :updated_ts, :integer
   end
 
   @doc """

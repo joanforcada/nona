@@ -13,8 +13,8 @@ defmodule Tino.Offer do
     belongs_to :product, Tino.Product
     many_to_many :countries, Tino.Country, join_through: "countries_offers"
     many_to_many :purchase_orders, Tino.PurchaseOrder, join_through: "offer_shares", on_delete: :delete_all
-
-    timestamps()
+    field :created_ts, :integer
+    field :updated_ts, :integer
   end
 
   @doc """

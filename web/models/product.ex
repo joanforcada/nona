@@ -19,7 +19,7 @@ defmodule Tino.Product do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :retribution_model, :code, :product_format, :product_status, :invoicing_model])
+    |> cast(params, [:name, :retribution_model, :code, :product_format, :product_status, :invoicing_model, :created_ts, :updated_ts])
   end
 
 end

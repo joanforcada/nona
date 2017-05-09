@@ -7,7 +7,8 @@ defmodule Tino.CountryOffer do
     belongs_to :offer, Tino.Offer
     belongs_to :country, Tino.Country
 
-    timestamps()
+    field :created_ts, :integer
+    field :updated_ts, :integer
   end
 
   @doc """

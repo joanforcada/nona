@@ -11,7 +11,8 @@ defmodule Tino.Enterprise do
     has_many :purchase_orders, Tino.PurchaseOrder
     has_many :campaigns, Tino.Campaign
 
-    timestamps()
+    field :created_ts, :integer
+    field :updated_ts, :integer
   end
 
   @doc """

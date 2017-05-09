@@ -8,7 +8,8 @@ defmodule Tino.Campaign do
     belongs_to :enterprise, Tino.Enterprise
     has_many :offers, Tino.Offer
 
-    timestamps()
+    field :created_ts, :integer
+    field :updated_ts, :integer
   end
 
   @doc """

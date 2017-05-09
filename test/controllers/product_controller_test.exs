@@ -9,7 +9,7 @@ defmodule Tino.ProductControllerTest do
 
   test "autocomplete video_seeding results", %{conn: conn}  do
 
-    Pr.insert_sample_row(%{"code" => "Vw", "name" => "Video Seeding"})
+    setup()
 
     query = from(p in Product, where: like(p.name, ^("%Video Seeding%")), select: %{"id" => p.id, "name" => p.name, "code" => p.code})
     query_res = Repo.all(query)
@@ -57,6 +57,9 @@ defmodule Tino.ProductControllerTest do
   end
 
   test "autocomplete empty result", %{conn: conn}  do
+
+    setup()
+    
     conn = get conn, product_path(conn, :autocomplete, term: "some random string")
     res = Poison.decode!(response(conn, 200))
     # assert length(Map.get(res, "result", [])) == 0
@@ -79,5 +82,12 @@ defmodule Tino.ProductControllerTest do
     conn = get conn, product_path(conn, :autocomplete)
     res = Poison.decode!(response(conn, 200))
     # assert res == true
+  end
+
+  def setup do
+    Pr.insert_sample_row(%{"code" => "Vw", "name" => "Video Seeding"})
+    Pr.insert_sample_row(%{"code" => "VS2", "name" => "Video Seeding 2"})
+    Pr.insert_sample_row(%{"code" => "Vw", "name" => "Native Video"})
+    Pr.insert_sample_row(%{"code" => "Vw", "name" => "Programmatic Native Video"})
   end
 end
