@@ -3,6 +3,6 @@ defmodule Tino.PingControllerTest do
 
   test "GET /ping", %{conn: conn} do
     conn = get conn, "/ping"
-    assert html_response(conn, 200) =~ "Pong"
+    assert response(conn, 200) =~ "Pong"
   end
 end

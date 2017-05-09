@@ -2,17 +2,16 @@ defmodule Tino.Product do
   use Tino.Web, :model
 
   schema "products" do
-    field :permalink, :string
     field :name, :string
     field :retribution_model, :integer
     field :code, :string
     field :product_format, :string
     field :product_status, :integer
     field :invoicing_model, :integer
+    field :created_ts, :bigint
+    field :updated_ts, :bigint
 
     # has_many :offers, Tino.Offer
-
-    timestamps()
   end
 
   @doc """

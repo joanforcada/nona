@@ -23,7 +23,6 @@ defmodule Tino.Router do
     get "/countries/autocomplete", CountryController, :autocomplete
     get "/currencies/autocomplete", CurrencyController, :autocomplete
 
-
   end
 
 
