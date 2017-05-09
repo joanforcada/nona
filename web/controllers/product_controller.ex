@@ -53,8 +53,10 @@ defmodule Tino.ProductController do
    def autocomplete(conn, params) do
 
       term = "%#{Map.get(params, "term", "")}%"
-
-      query = from(p in Product, where: like(p.name, ^term), select: %{id: p.id, name: p.name, code: p.code})
+      query = from(
+        p in Product,
+        where: like(p.name, ^term),
+        select: %{id: p.id, name: p.name, code: p.code})
       res = Repo.all(query)
       json(conn, %{valid: true, result: res})
    end
