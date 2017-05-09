@@ -8,8 +8,8 @@ defmodule Tino.Product do
     field :product_format, :string
     field :product_status, :integer
     field :invoicing_model, :integer
-    field :created_ts, :bigint
-    field :updated_ts, :bigint
+    field :created_ts, :integer
+    field :updated_ts, :integer
 
     # has_many :offers, Tino.Offer
   end
