@@ -13,8 +13,7 @@ defmodule Tino.Test.Helpers.Offer do
         "video_type" => "html5",
         "vast_version" => "3",
         "created_ts" => System.system_time(:nanoseconds),
-        "updated_ts" => System.system_time(:nanoseconds)
-    }, data)
+        "updated_ts" => System.system_time(:nanoseconds)}, data)
 
   end
 

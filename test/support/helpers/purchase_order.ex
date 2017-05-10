@@ -4,7 +4,7 @@ defmodule Tino.Test.Helpers.PurchaseOrder do
 
   def get_sample_row(data) do
     Map.merge(%{
-        "number" => "99999999",
+        "number" => "99993333",
         "amount" => "5,5",
         "order_type" => "60",
         "created_ts" => System.system_time(:nanoseconds),

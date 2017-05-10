@@ -50,4 +50,15 @@ defmodule Tino.CampaignController do
 
   end
 
+  def autocomplete(conn, params) do
+
+     term = "%#{Map.get(params, "term", "")}%"
+     query = from(
+       c in Campaign,
+       where: like(c.name, ^term),
+       select: %{id: c.id, name: c.name, permalink: c.permalink})
+     res = Repo.all(query)
+     json(conn, %{valid: true, result: res})
+  end
+
 end

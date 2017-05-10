@@ -3,7 +3,7 @@ defmodule Tino.Campaign do
 
   schema "campaigns" do
     field :name, :string
-    field :permalink, :integer
+    field :permalink, :string
 
     belongs_to :enterprise, Tino.Enterprise
     has_many :offers, Tino.Offer
@@ -17,7 +17,7 @@ defmodule Tino.Campaign do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :enterprise_id, :created_ts, :updated_ts])
+    |> cast(params, [:name, :permalink, :enterprise_id, :created_ts, :updated_ts])
   end
 
 end
