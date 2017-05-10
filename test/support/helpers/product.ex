@@ -1,6 +1,8 @@
 defmodule Tino.Test.Helpers.Product do
+
   alias Tino.Product
   alias Tino.Repo
+
   def get_sample_row(data) do
     Map.merge(%{
      "name" => "some product",
@@ -32,6 +34,6 @@ defmodule Tino.Test.Helpers.Product do
     row = get_sample_row data
     changeset = Product.changeset(%Product{}, row)
     res = Repo.insert(changeset)
-    IO.inspect res
+
   end
 end

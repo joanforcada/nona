@@ -1,34 +1,23 @@
-defmodule Mona.Test.Helpers.Currency do
-  def get_sample_row(data) do
-    data = data |> H.Pipe.merge([
-      permalink: "23232323",
-      body: %{
-        "permalink" => "23ade89d",
-        "name" => "https://someadblogname.com",
-        "iab_codes" => ["IAB9","IAB9-23"],
-        "url" => "https://theadblogurl.es",
-        "bid_floor" => 0,
-        "bid_floor_currency_code" => "EUR",
-        "price_floor" => "",
-        "categories" => ["IAB9_Hobbies & Interests","IAB9-23_Photography"],
-        "pixel_url" => "",
-        "pmu" => "daf9779d",
-        "direct_deal_floor" => 0.0,
-        "direct_deals" => [],
-        "css" => "",
-        "css_path" => ""
-      }])
+defmodule Tino.Test.Helpers.Currency do
 
-    %{
-      "metadata" =>  data[:body],
-      "permalink" =>  data[:permalink],
-      "updated_ts" =>  1481277182826768640
-    }
+  alias Tino.Repo
+  alias Tino.Currency
+
+  def get_sample_row(data) do
+    Map.merge(%{
+        "name" => "currency1",
+        "permalink" => "66666666",
+        "symbol" => "80808080",
+        "created_ts" => System.system_time(:nanoseconds),
+        "updated_ts" => System.system_time(:nanoseconds)
+    }, data)
+      
   end
 
   def insert_sample_row(data \\ []) do
     row = get_sample_row data
-    Irvine.insert_into_ets_repo(:data_cache_adblogs, row["permalink"], [row])
-    row
+    changeset = Currency.changeset(%Currency{}, row)
+    res = Repo.insert(changeset)
   end
+
 end

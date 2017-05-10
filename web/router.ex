@@ -20,6 +20,7 @@ defmodule Tino.Router do
     get "/", PageController, :index
 
     get "/products/autocomplete", ProductController, :autocomplete
+    get "/campaigns/autocomplete", CampaignController, :autocomplete
     get "/countries/autocomplete", CountryController, :autocomplete
     get "/currencies/autocomplete", CurrencyController, :autocomplete
 
