@@ -5,12 +5,11 @@ defmodule Mona.Test.Helpers.Campaign do
 
   def get_sample_row(data) do
 
-  Map.merge(
-  %{"name" => "cola",
-    "permalink" => "55555555",
-    "created_ts" => System.system_time(:nanoseconds),
-    "updated_ts" => System.system_time(:nanoseconds)}
-  ,data)
+    Map.merge(
+    %{"name" => "cola",
+      "permalink" => "55555555",
+      "created_ts" => System.system_time(:nanoseconds),
+      "updated_ts" => System.system_time(:nanoseconds)}, data)
 
   end
 
@@ -18,6 +17,6 @@ defmodule Mona.Test.Helpers.Campaign do
     row = get_sample_row data
     changeset = Campaign.changeset(%Campaign{}, row)
     res = Repo.insert(changeset)
-
+    row
   end
 end

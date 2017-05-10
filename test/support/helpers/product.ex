@@ -31,7 +31,7 @@ defmodule Tino.Test.Helpers.Product do
   def insert_sample_row(data \\ []) do
     row = get_sample_row data
     changeset = Product.changeset(%Product{}, row)
-    res = Repo.insert(changeset)
-    IO.inspect res
+    Repo.insert(changeset)
+    row
   end
 end

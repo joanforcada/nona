@@ -15,7 +15,7 @@ defmodule Tino.Country do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :iso_code])
+    |> cast(params, [:name, :iso_code, :created_ts, :updated_ts])
   end
 
 end
