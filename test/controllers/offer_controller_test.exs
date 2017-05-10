@@ -9,7 +9,6 @@ defmodule Tino.OfferControllerTest do
 
   alias Tino.Offer
 
-
   test "autocomplete offer_test results", %{conn: conn}  do
 
     setup()
@@ -44,9 +43,6 @@ defmodule Tino.OfferControllerTest do
   def setup do
     O.insert_sample_row(%{"budget" => 88888888, "status" => "pause", "offer_url" => "www.admanmedia.com", "preview_url" => "www.admanmedia.com", "video_type" => "html5", "vast_version" => "3", "permalink" => 88885555})
     O.insert_sample_row(%{"budget" => 05050505, "status" => "active", "offer_url" => "www.admanmedia1.com", "preview_url" => "www.admanmedia.com", "video_type" => "html5", "vast_version" => "3", "permalink" => 88885552})
-    #Po.insert_sample_row(%{"amount" => Decimal.new(6), "number" => "99994333"})
-    #Po.insert_sample_row(%{"amount" => Decimal.new(7), "number" => "99995333"})
-    #Po.insert_sample_row(%{"amount" => Decimal.new(8), "number" => "99996333"})
   end
 
 

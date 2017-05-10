@@ -10,7 +10,7 @@ defmodule Tino.Test.Helpers.Offer do
         "status" => "active",
         "offer_url" => "www.admanmedia.com",
         "preview_url" => "www.admanmedia.com/preview",
-        "video_type" => "html5",
+        "video_provider" => "html5",
         "vast_version" => "3",
         "created_ts" => System.system_time(:nanoseconds),
         "updated_ts" => System.system_time(:nanoseconds)}, data)
@@ -20,6 +20,7 @@ defmodule Tino.Test.Helpers.Offer do
   def insert_sample_row(data \\ []) do
     row = get_sample_row data
     changeset = Offer.changeset(%Offer{}, row)
-    res = Repo.insert(changeset)
+    Repo.insert(changeset)
+    row
   end
 end

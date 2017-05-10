@@ -1,4 +1,4 @@
-defmodule Tino.Test.Helpers.Campaign do
+defmodule Mona.Test.Helpers.Campaign do
 
   alias Tino.Repo
   alias Tino.Campaign

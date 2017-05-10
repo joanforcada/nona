@@ -50,19 +50,21 @@ defmodule Tino.ProductController do
 
    end
 
-   def autocomplete(conn, params) do
-
-      term = "%#{Map.get(params, "term", "")}%"
-      query = from(
-        p in Product,
-        where: like(p.name, ^term),
-        select: %{id: p.id, name: p.name, code: p.code})
-      res = Repo.all(query)
-      json(conn, %{valid: true, result: res})
+   def autocomplete(conn, %{"term" => term}) do
+     term = "%#{term}%"
+     ["name", "code", "product_format"]
+     query = from(
+         p in Product,
+         where: like(p.name, ^term) or like(p.code, ^term),
+         select: %{id: p.id, name: p.name, code: p.code})
+     res = Repo.all(query)
+     json(conn, %{valid: true, result: res})
    end
 
-
-    # update repo and redirect accordingly
+   def autocomplete(conn, _params) do
+     json(conn, %{valid: false, result: "Param 'term' is missing"})
+   end
+  # update repo and redirect accordingly
 
 
 

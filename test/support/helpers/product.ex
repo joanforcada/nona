@@ -1,8 +1,6 @@
 defmodule Tino.Test.Helpers.Product do
-
   alias Tino.Product
   alias Tino.Repo
-
   def get_sample_row(data) do
     Map.merge(%{
      "name" => "some product",
