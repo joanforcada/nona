@@ -41,7 +41,7 @@ defmodule Tino.CampaignControllerTest do
   def setup do
     C.insert_sample_row(%{"permalink" => "11111111", "name" => "cola"})
     C.insert_sample_row(%{"permalink" => "22222222", "name" => "cola 2"})
-    C.insert_sample_row(%{"permalink" => "33333333", "name" => "cola 3"})
+    C.insert_sample_row(%{"permalink" => "33333333", "name" => "campaign 3"})
     C.insert_sample_row(%{"permalink" => "44444444", "name" => "cola 4"})
   end
 end

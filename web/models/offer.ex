@@ -22,7 +22,8 @@ defmodule Tino.Offer do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:campaign_id, :product_id, :status, :offer_url, :preview_url, :video_type, :vast_version])
+    |> cast(params, [:status, :offer_url, :preview_url, :video_type, :vast_version, :created_ts, :updated_ts])
+    #|> cast_assoc(params, [:campaign_id, :product_id,])
   end
 
 end
