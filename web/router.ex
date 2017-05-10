@@ -22,6 +22,16 @@ defmodule Tino.Router do
     get "/products/autocomplete", ProductController, :autocomplete
     get "/countries/autocomplete", CountryController, :autocomplete
     get "/currencies/autocomplete", CurrencyController, :autocomplete
+    get "/offers/autocomplete", OfferController, :autocomplete
+    get "/purchase_orders/autocomplete", PurchaseOrderController, :autocomplete
+    get "/campaigns/autocomplete", CampaignController, :autocomplete
+
+    resources "/products", ProductController, only: [:create, :update]
+    resources "/countries", CountryController, only: [:create, :update]
+    resources "/currencies", CurrencyController, only: [:create, :update]
+    resources "/offers", OfferController, only: [:create, :update]
+    resources "/purchase_orders", PurchaseOrderController, only: [:create, :update]
+    resources "/campaigns", CampaignController, only: [:create, :update]
 
   end
 
