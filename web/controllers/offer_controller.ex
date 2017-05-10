@@ -44,7 +44,18 @@ alias Tino.Offer
       #{:error, changeset} ->
       #  conn
       #  |> put_status(:unprocessable_entity)
-      #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
+    #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
 
+  end
+
+  def autocomplete(conn, params) do
+
+     term = "%#{Map.get(params, "term", "")}%"
+     query = from(
+       o in Offer,
+       where: like(o.permalink, ^term),
+       select: %{id: o.id, permalink: o.permalink, budget: o.budget, status: o.status, offer_url: o.offer_url, preview_url: o.preview_url, video_type: o.video_type, vast_version: o.vast_version})
+     res = Repo.all(query)
+     json(conn, %{valid: true, result: res})
   end
 end

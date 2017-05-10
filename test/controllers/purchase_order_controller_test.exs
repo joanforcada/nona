@@ -43,8 +43,8 @@ defmodule Tino.PurchaseOrderControllerTest do
 
   def setup do
     Po.insert_sample_row(%{"amount" => 5.001, "number" => "99993333"})
-    #Po.insert_sample_row(%{"amount" => Decimal.new(6), "number" => "99994333"})
+    #Po.insert_sample_row(%{"amount" => Decimal.new(6), "number" => "99994533"})
     #Po.insert_sample_row(%{"amount" => Decimal.new(7), "number" => "99995333"})
-    #Po.insert_sample_row(%{"amount" => Decimal.new(8), "number" => "99996333"})
+    #Po.insert_sample_row(%{"amount" => Decimal.new(8), "number" => "99996833"})
   end
 end
