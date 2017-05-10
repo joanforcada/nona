@@ -16,7 +16,7 @@ defmodule Tino.CountryOffer do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:offer_id, :country_id])
+    |> cast(params, [:offer_id, :country_id, :created_ts, :updated_ts])
     # |> validate_required([:user_id, :room_id])
     |> unique_constraint(:country_id_offer_id)
   end
