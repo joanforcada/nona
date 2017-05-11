@@ -54,7 +54,7 @@ alias Tino.Offer
      query = from(
        o in Offer,
        where: like(o.permalink, ^term),
-       select: %{id: o.id, permalink: o.permalink, budget: o.budget, status: o.status, offer_url: o.offer_url, preview_url: o.preview_url, video_type: o.video_type, vast_version: o.vast_version})
+       select: %{id: o.id, permalink: o.permalink, status: o.status, offer_url: o.offer_url, preview_url: o.preview_url, video_provider: o.video_provider, vast_version: o.vast_version})
      res = Repo.all(query)
      json(conn, %{valid: true, result: res})
   end

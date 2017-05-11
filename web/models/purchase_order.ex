@@ -3,7 +3,7 @@ defmodule Tino.PurchaseOrder do
 
   schema "purchase_orders" do
     field :number, :string
-    field :amount, :decimal
+    field :amount, :float
 
     field :order_type, :integer
 

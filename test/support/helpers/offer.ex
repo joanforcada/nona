@@ -5,12 +5,12 @@ defmodule Tino.Test.Helpers.Offer do
 
   def get_sample_row(data) do
     Map.merge(%{
-        "permalink" => "33334444",
+        "permalink" => "88885555",
         "budget" => "66666666",
         "status" => "active",
         "offer_url" => "www.admanmedia.com",
         "preview_url" => "www.admanmedia.com/preview",
-        "video_type" => "html5",
+        "video_provider" => "5",
         "vast_version" => "3",
         "created_ts" => System.system_time(:nanoseconds),
         "updated_ts" => System.system_time(:nanoseconds)}, data)

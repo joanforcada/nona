@@ -16,6 +16,5 @@ defmodule Tino.Test.Helpers.PurchaseOrder do
     row = get_sample_row data
     changeset = PurchaseOrder.changeset(%PurchaseOrder{}, row)
     res = Repo.insert(changeset)
-    IO.inspect(res)
   end
 end

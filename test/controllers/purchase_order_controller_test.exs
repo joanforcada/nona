@@ -32,7 +32,7 @@ defmodule Tino.PurchaseOrderControllerTest do
     assert Map.get(res, "result", []) == query_res
 
 
-    query = from(po in PurchaseOrder, where: like(po.number, ^("%3333%")), select: %{"id" => po.id, "number" => po.number, "amount" => po.amount})
+    query = from(po in PurchaseOrder, where: like(po.number, ^("%333%")), select: %{"id" => po.id, "number" => po.number, "amount" => po.amount})
     query_res = Repo.all(query)
     res = conn
       |> get(purchase_order_path(conn, :autocomplete, term: "333"))
@@ -43,8 +43,8 @@ defmodule Tino.PurchaseOrderControllerTest do
 
   def setup do
     Po.insert_sample_row(%{"amount" => 5.001, "number" => "99993333"})
-    #Po.insert_sample_row(%{"amount" => Decimal.new(6), "number" => "99994533"})
-    #Po.insert_sample_row(%{"amount" => Decimal.new(7), "number" => "99995333"})
+    Po.insert_sample_row(%{"amount" => 6.001, "number" => "99994533"})
+    Po.insert_sample_row(%{"amount" => 7.001, "number" => "99995333"})
     #Po.insert_sample_row(%{"amount" => Decimal.new(8), "number" => "99996833"})
   end
 end
