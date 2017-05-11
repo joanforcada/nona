@@ -2,12 +2,11 @@ defmodule Tino.Offer do
   use Tino.Web, :model
 
   schema "offers" do
-    field :permalink, :integer
-    field :budget,  :integer
+    field :permalink, :string
     field :status,  :string
     field :offer_url,  :string
     field :preview_url,  :string
-    field :video_type, :string
+    field :video_provider, :integer
     field :vast_version, :integer
     belongs_to :campaign, Tino.Campaign
     belongs_to :product, Tino.Product
@@ -22,7 +21,7 @@ defmodule Tino.Offer do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:status, :offer_url, :preview_url, :video_type, :vast_version, :created_ts, :updated_ts])
+    |> cast(params, [:permalink, :status, :offer_url, :preview_url, :video_provider, :vast_version, :created_ts, :updated_ts])
     #|> cast_assoc(params, [:campaign_id, :product_id,])
   end
 
