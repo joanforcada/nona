@@ -7,40 +7,41 @@ defmodule Tino.CampaignControllerTest do
 
   alias Tino.Campaign
 
+  setup do
+    C.insert_sample_row(%{"permalink" => "11111111", "name" => "cola"})
+    C.insert_sample_row(%{"permalink" => "22222222", "name" => "cola 2"})
+    C.insert_sample_row(%{"permalink" => "33333333", "name" => "campaign 3"})
+    C.insert_sample_row(%{"permalink" => "44444444", "name" => "cola 4"})
+  end
+
   test "autocomplete campaign_cola results", %{conn: conn}  do
 
-    setup()
+    autocomplete_action("cola", conn)
+    autocomplete_action("co", conn)
+    autocomplete_action("la", conn)
+  end
 
-    query = from(c in Campaign, where: like(c.name, ^("%cola%")), select: %{"id" => c.id, "name" => c.name, "permalink" => c.permalink})
-    query_res = Repo.all(query)
+  def autocomplete_action(term, conn) do
+    # term = "%#{term}%"
+    fields = [name: "name", permalink: "permalink"]
+
+
+    query_res = build_results(fields, term)
     res = conn
-      |> get(campaign_path(conn, :autocomplete, term: "cola"))
-      |> response(200)
-      |> Poison.decode!
-    assert Map.get(res, "result", []) == query_res
-
-    query = from(c in Campaign, where: like(c.name, ^("%co%")), select: %{"id" => c.id, "name" => c.name, "permalink" => c.permalink})
-    query_res = Repo.all(query)
-    res = conn
-      |> get(campaign_path(conn, :autocomplete, term: "co"))
-      |> response(200)
-      |> Poison.decode!
-    assert Map.get(res, "result", []) == query_res
-
-
-    query = from(c in Campaign, where: like(c.name, ^("%la%")), select: %{"id" => c.id, "name" => c.name, "permalink" => c.permalink})
-    query_res = Repo.all(query)
-    res = conn
-      |> get(campaign_path(conn, :autocomplete, term: "la"))
+      |> get(product_path(conn, :autocomplete, term: term))
       |> response(200)
       |> Poison.decode!
     assert Map.get(res, "result", []) == query_res
   end
 
-  def setup do
-    C.insert_sample_row(%{"permalink" => "11111111", "name" => "cola"})
-    C.insert_sample_row(%{"permalink" => "22222222", "name" => "cola 2"})
-    C.insert_sample_row(%{"permalink" => "33333333", "name" => "campaign 3"})
-    C.insert_sample_row(%{"permalink" => "44444444", "name" => "cola 4"})
+  def build_results(fields, term) do
+    auto_query = Enum.reduce(fields, Campaign, fn {key, _value}, query ->
+    from p in query, or_where: like(field(p, ^key), ^term)
+    end)
+     |> select([c, _], %{"id" => c.id, "name" => c.name, "permalink" => c.permalink})
+    case Repo.all(auto_query) do
+      [] -> "There are no results for this term"
+      results -> results
+    end
   end
 end

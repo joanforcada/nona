@@ -1,8 +1,10 @@
-require Alfred.Helpers, as: H
 defmodule Tino.ProductController do
   use Tino.Web, :controller
+  alias Tino.Controllers.Common
 
   # @autocomplete_fields = ["name", "product_format", "code"]
+  @autocomplete_fields [name: "name", code: "code", product_format: "product_format"]
+  @select_fields ~w(id name code)a
 
   alias Tino.Product
 
@@ -15,7 +17,7 @@ defmodule Tino.ProductController do
 
          conn
          |> put_status(:created)
-         |> render("show.json", product: product) #retornes plantilla
+         |> json(%{valid: true, result: %{permalink: product.permalink, id: product.id}}) #retornes plantilla
 
        {:error, changeset} ->
          conn
@@ -53,45 +55,18 @@ defmodule Tino.ProductController do
 
    def autocomplete(conn, %{"term" => term}) do
      term = "%#{term}%"
-     fields = [name: "name", code: "code", product_format: "product_format"]
 
-     auto_query = Enum.reduce(fields, Product, fn {key, _value}, query ->
-       from p in query, or_where: like(field(p, ^key), ^term)
-     end)
-      |> select([p, _], %{id: p.id, name: p.name, code: p.code})
+    #  auto_query = Enum.reduce(@autocomplete_fields, Product, fn {key, _value}, query ->
+    #    from p in query, or_where: like(field(p, ^key), ^term)
+    #  end)
 
-     res = Repo.all(auto_query)
+    {:ok, %{model: Product, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
+      |> Common.add_autocomplete_result
+      |> build_response
 
-    #  res = Repo.all(q_def)
-    #  query = from(
-    #      p in Product,
-    #      where: like(p.name, ^term) or like(p.code, ^term) or like(),
-    #      select: %{id: p.id, name: p.name, code: p.code})
-    #  res = Repo.all(auto_query)
+   end
+
+   def build_response({:ok, %{conn: conn, autocomplete_result: res}}) do
      json(conn, %{valid: true, result: res})
    end
-
-  #  def compose_query(fields, model, term) do
-  #    Enum.reduce(fields, model, fn {_key, value}, query ->
-  #      from p in query, or_where: like(^p."#{value}", ^term)
-  #    end)
-  #  end
-
-  #  def compose_query(model, field, term) do
-  #    from(p in model, or_where: like(^field, ^term))
-  #  end
-
-  #  def loop_query(model, fields, term) do
-  #    Enum.reduce(fields, model, &compose_query())
-  #  end
-
-
-
-   def autocomplete(conn, _params) do
-     json(conn, %{valid: false, result: "Param 'term' is missing"})
-   end
-  # update repo and redirect accordingly
-
-
-
 end

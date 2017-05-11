@@ -41,22 +41,37 @@ defmodule Tino.ProductControllerTest do
       |> response(200)
       |> Poison.decode!
     assert res["valid"] == false
-    assert res["result"] == "Param 'term' is missing"
+    assert res["result"] == "There are no results for this term"
   end
 
   def autocomplete_action(term, conn) do
-    term = "%#{term}%"
+
     fields = [name: "name", code: "code", product_format: "product_format"]
-    auto_query = Enum.reduce(fields, Product, fn {key, _value}, query ->
-      from p in query, or_where: like(field(p, ^key), ^term)
-    end)
-     |> select([p, _], %{"id" => p.id, "name" => p.name, "code" => p.code})
-    query_res = Repo.all(auto_query)
+    select_fields = [:id, :name, :code]
+
+    query_res = build_results(fields, term, select_fields)
+    inspect query_res
     res = conn
       |> get(product_path(conn, :autocomplete, term: term))
       |> response(200)
       |> Poison.decode!
     assert Map.get(res, "result", []) == query_res
+  end
+
+  def build_results(fields, term, select_fields) do
+    term = "%#{term}%"
+    auto_query =
+    Enum.reduce(fields, Product, fn {key, _value}, query ->
+      from p in query, or_where: like(field(p, ^key), ^term)
+    end)
+    H.spit auto_query
+    res = Repo.all(auto_query)
+    H.spit res
+
+    case res do
+      [] -> "There are no results for this term"
+      results -> results
+    end
   end
 
 

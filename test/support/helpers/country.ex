@@ -8,8 +8,7 @@ defmodule Tino.Test.Helpers.Country do
       "name" => "country_1",
       "iso_code" => "44444444",
       "created_ts" => System.system_time(:nanoseconds),
-      "updated_ts" => System.system_time(:nanoseconds)
-      }, data)
+      "updated_ts" => System.system_time(:nanoseconds)}, data)
 
   end
 

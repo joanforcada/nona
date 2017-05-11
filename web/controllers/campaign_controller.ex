@@ -1,9 +1,13 @@
 defmodule Tino.CampaignController do
   use Tino.Web, :controller
 
- alias Tino.Campaign
+  @autocomplete_fields [name: "name", permalink: "permalink"]
+  @select_fields ~w(id name permalink)a
 
- def create(conn, %{"campaign" => campaign_params}) do
+  alias Tino.Campaign
+  alias Tino.Controllers.Common
+
+  def create(conn, %{"campaign" => campaign_params}) do
     # permalink = "11111111" #Guardian.Plug.current_resource(conn)
 
     changeset = Campaign.changeset(%Campaign{}, campaign_params)
@@ -13,7 +17,7 @@ defmodule Tino.CampaignController do
 
         conn
         |> put_status(:created)
-        |> render("show.json", campaign: campaign) #retornes plantilla
+        |> json(%{valid: true, result: %{permalink: campaign.permalink, id: campaign.id}}) #retorne#retornes plantilla
 
       {:error, changeset} ->
         conn
@@ -50,15 +54,27 @@ defmodule Tino.CampaignController do
 
   end
 
-  def autocomplete(conn, params) do
+  def autocomplete(conn, %{"term" => term}) do
 
-     term = "%#{Map.get(params, "term", "")}%"
-     query = from(
-       c in Campaign,
-       where: like(c.name, ^term),
-       select: %{id: c.id, name: c.name, permalink: c.permalink})
-     res = Repo.all(query)
-     json(conn, %{valid: true, result: res})
+    term = "%#{term}%"
+
+    {:ok, %{model: Campaign, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
+      |> Common.add_autocomplete_result
+      |> build_response
+
+    # auto_query = Enum.reduce(@autocomplete_fields, Campaign, fn {key, _value}, query ->
+    #   from p in query, or_where: like(field(p, ^key), ^term)
+    # end)
+    #  |> select([p, _], %{id: p.id, name: p.name, permalink: p.permalink})
+    #
+    # res = Repo.all(auto_query)
+    #
+    # json(conn, %{valid: true, result: res})
+  end
+
+  def build_response({:ok, %{autocomplete_result: res, conn: conn}}) do
+    IO.inspect res
+    json(conn, %{valid: true, result: res})
   end
 
 end

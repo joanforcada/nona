@@ -1,3 +1,4 @@
+require Alfred.Helpers, as: H
 defmodule Tino.OfferController do
 use Tino.Web, :controller
 
@@ -55,6 +56,7 @@ alias Tino.Offer
        where: like(o.permalink, ^term),
        select: %{id: o.id, permalink: o.permalink, status: o.status, offer_url: o.offer_url, preview_url: o.preview_url, video_provider: o.video_provider, vast_version: o.vast_version})
      res = Repo.all(query)
+     H.spit res 
      json(conn, %{valid: true, result: res})
   end
 
