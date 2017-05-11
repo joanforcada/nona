@@ -15,6 +15,7 @@ defmodule Tino.Test.Helpers.PurchaseOrder do
   def insert_sample_row(data \\ []) do
     row = get_sample_row data
     changeset = PurchaseOrder.changeset(%PurchaseOrder{}, row)
-    res = Repo.insert(changeset)
+    Repo.insert(changeset)
+    row
   end
 end

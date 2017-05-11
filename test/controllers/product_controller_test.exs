@@ -7,9 +7,14 @@ defmodule Tino.ProductControllerTest do
 
   alias Tino.Product
 
-  test "autocomplete video_seeding results", %{conn: conn}  do
+  setup do
+    Pr.insert_sample_row(%{"code" => "Vw", "name" => "Video Seeding"})
+    Pr.insert_sample_row(%{"code" => "VS2", "name" => "Video Seeding 2"})
+    Pr.insert_sample_row(%{"code" => "Nv", "name" => "Native Video"})
+    Pr.insert_sample_row(%{"code" => "Pr_N", "name" => "Programmatic Native Video"})
+  end
 
-    setup()
+  test "autocomplete video_seeding results", %{conn: conn}  do
 
     autocomplete_action("Video Seeding", conn)
     autocomplete_action("seeding", conn)
@@ -21,8 +26,6 @@ defmodule Tino.ProductControllerTest do
 
   test "autocomplete empty result", %{conn: conn}  do
 
-    setup()
-
     autocomplete_action("some random string", conn)
     autocomplete_action("INtravenoso", conn)
     autocomplete_action("CaMeL", conn)
@@ -31,7 +34,6 @@ defmodule Tino.ProductControllerTest do
   end
 
   test "autocomplete no term involved", %{conn: conn} do
-    setup()
 
     autocomplete_action("", conn)
     res = conn
@@ -43,8 +45,13 @@ defmodule Tino.ProductControllerTest do
   end
 
   def autocomplete_action(term, conn) do
-    query = from(p in Product, where: like(p.name, ^("%#{term}%")), select: %{"id" => p.id, "name" => p.name, "code" => p.code})
-    query_res = Repo.all(query)
+    term = "%#{term}%"
+    fields = [name: "name", code: "code", product_format: "product_format"]
+    auto_query = Enum.reduce(fields, Product, fn {key, _value}, query ->
+      from p in query, or_where: like(field(p, ^key), ^term)
+    end)
+     |> select([p, _], %{"id" => p.id, "name" => p.name, "code" => p.code})
+    query_res = Repo.all(auto_query)
     res = conn
       |> get(product_path(conn, :autocomplete, term: term))
       |> response(200)
@@ -52,10 +59,5 @@ defmodule Tino.ProductControllerTest do
     assert Map.get(res, "result", []) == query_res
   end
 
-  def setup do
-    Pr.insert_sample_row(%{"code" => "Vw", "name" => "Video Seeding"})
-    Pr.insert_sample_row(%{"code" => "VS2", "name" => "Video Seeding 2"})
-    Pr.insert_sample_row(%{"code" => "Vw", "name" => "Native Video"})
-    Pr.insert_sample_row(%{"code" => "Vw", "name" => "Programmatic Native Video"})
-  end
+
 end

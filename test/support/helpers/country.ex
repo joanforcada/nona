@@ -16,6 +16,7 @@ defmodule Tino.Test.Helpers.Country do
   def insert_sample_row(data \\ []) do
     row = get_sample_row data
     changeset = Country.changeset(%Country{}, row)
-    res = Repo.insert(changeset)
+    Repo.insert(changeset)
+    row
   end
 end

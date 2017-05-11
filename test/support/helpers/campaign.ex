@@ -1,4 +1,4 @@
-defmodule Mona.Test.Helpers.Campaign do
+defmodule Tino.Test.Helpers.Campaign do
 
   alias Tino.Repo
   alias Tino.Campaign
@@ -16,7 +16,7 @@ defmodule Mona.Test.Helpers.Campaign do
   def insert_sample_row(data \\ []) do
     row = get_sample_row data
     changeset = Campaign.changeset(%Campaign{}, row)
-    res = Repo.insert(changeset)
+    Repo.insert(changeset)
     row
   end
 end

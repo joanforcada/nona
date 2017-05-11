@@ -13,7 +13,6 @@ defmodule Tino.CampaignControllerTest do
 
     query = from(c in Campaign, where: like(c.name, ^("%cola%")), select: %{"id" => c.id, "name" => c.name, "permalink" => c.permalink})
     query_res = Repo.all(query)
-    H.spit query_res
     res = conn
       |> get(campaign_path(conn, :autocomplete, term: "cola"))
       |> response(200)

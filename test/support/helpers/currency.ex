@@ -9,15 +9,15 @@ defmodule Tino.Test.Helpers.Currency do
         "permalink" => "66666666",
         "symbol" => "80808080",
         "created_ts" => System.system_time(:nanoseconds),
-        "updated_ts" => System.system_time(:nanoseconds)
-    }, data)
-      
+        "updated_ts" => System.system_time(:nanoseconds)}, data)
+
   end
 
   def insert_sample_row(data \\ []) do
     row = get_sample_row data
     changeset = Currency.changeset(%Currency{}, row)
-    res = Repo.insert(changeset)
+    Repo.insert(changeset)
+    row
   end
 
 end

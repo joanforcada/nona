@@ -48,15 +48,18 @@ defmodule Tino.PurchaseOrderController do
 
   end
 
-  def autocomplete(conn, params) do
+  def autocomplete(conn, %{"term" => term}) do
+    term = "%#{term}%"
+    query = from(
+      po in PurchaseOrder,
+      where: like(po.number, ^term),
+      select: %{id: po.id, number: po.number, amount: po.amount})
+    res = Repo.all(query)
+    json(conn, %{valid: true, result: res})
+  end
 
-     term = "%#{Map.get(params, "term", "")}%"
-     query = from(
-       po in PurchaseOrder,
-       where: like(po.number, ^term),
-       select: %{id: po.id, number: po.number, amount: po.amount})
-     res = Repo.all(query)
-     json(conn, %{valid: true, result: res})
+  def autocomplete(conn, _params) do
+    json(conn, %{valid: false, result: "Param 'term' is missing"})
   end
 
 end

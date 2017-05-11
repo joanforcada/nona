@@ -4,7 +4,6 @@ defmodule Tino.PurchaseOrder do
   schema "purchase_orders" do
     field :number, :string
     field :amount, :float
-
     field :order_type, :integer
 
     belongs_to :enterprise, Tino.Enterprise

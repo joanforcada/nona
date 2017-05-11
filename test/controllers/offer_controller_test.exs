@@ -15,7 +15,6 @@ defmodule Tino.OfferControllerTest do
 
     query = from(o in Offer, where: like(o.permalink, ^("%88885555%")), select: %{"id" => o.id, "permalink" => o.permalink, "status" => o.status, "offer_url" => o.offer_url, "preview_url" => o.preview_url, "video_provider" => o.video_provider, "vast_version" => o.vast_version})
     query_res = Repo.all(query)
-    H.spit query_res
     res = conn
       |> get(offer_path(conn, :autocomplete, term: "88885555"))
       |> response(200)

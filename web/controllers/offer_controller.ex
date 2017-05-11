@@ -48,14 +48,17 @@ alias Tino.Offer
 
   end
 
-  def autocomplete(conn, params) do
-
-     term = "%#{Map.get(params, "term", "")}%"
+  def autocomplete(conn, %{"term"=> term}) do
+     term = "%#{term}%"
      query = from(
        o in Offer,
        where: like(o.permalink, ^term),
        select: %{id: o.id, permalink: o.permalink, status: o.status, offer_url: o.offer_url, preview_url: o.preview_url, video_provider: o.video_provider, vast_version: o.vast_version})
      res = Repo.all(query)
      json(conn, %{valid: true, result: res})
+  end
+
+  def autocomplete(conn, _params) do
+    json(conn, %{valid: false, result: "Param 'term' is missing"})
   end
 end
