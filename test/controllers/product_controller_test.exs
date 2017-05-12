@@ -50,11 +50,13 @@ defmodule Tino.ProductControllerTest do
     select_fields = ~w(id name code)a
 
     query_res = build_results(fields, term, select_fields)
+      |> H.Map.stringify_keys
+      
     res = conn
       |> get(product_path(conn, :autocomplete, term: term))
       |> response(200)
       |> Poison.decode!
-    assert Map.get(res, "result", []) == H.Map.stringify_keys(query_res)
+    assert Map.get(res, "result", []) == query_res
   end
 
   def build_results(fields, term, select_fields) do
@@ -64,7 +66,6 @@ defmodule Tino.ProductControllerTest do
       from p in query, or_where: like(field(p, ^key), ^term)
     end)
     |> select([p], map(p, ^select_fields))
-    |> H.spit
     res = Repo.all(auto_query)
 
     case res do
