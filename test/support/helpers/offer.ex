@@ -5,6 +5,7 @@ defmodule Tino.Test.Helpers.Offer do
 
   def get_sample_row(data) do
     Map.merge(%{
+        "name" => "some offer name",
         "permalink" => "33334444",
         "status" => "active",
         "offer_url" => "www.admanmedia.com",

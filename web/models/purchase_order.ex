@@ -21,7 +21,7 @@ defmodule Tino.PurchaseOrder do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:number, :amount, :order_type, :created_ts, :updated_ts])
+    |> cast(params, [:number, :description, :amount, :order_type, :created_ts, :updated_ts])
   #  |> cast_assoc(params, [:campaign, :enterprise, :product, :country])
   end
 end

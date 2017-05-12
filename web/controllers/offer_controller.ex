@@ -1,10 +1,14 @@
 require Alfred.Helpers, as: H
 defmodule Tino.OfferController do
-use Tino.Web, :controller
+  use Tino.Web, :controller
+  
+  alias Tino.Offer
+  alias Tino.Controllers.Common
 
-alias Tino.Offer
+  @autocomplete_fields ~w(name permalink)a
+  @select_fields ~w(id name permalink)a
 
- def create(conn, %{"offer" => offer_params}) do
+  def create(conn, %{"offer" => offer_params}) do
     permalink = "11111112" #Guardian.Plug.current_resource(conn)
     changeset = Offer.changeset(%Offer{}, offer_params)
 
@@ -49,18 +53,20 @@ alias Tino.Offer
 
   end
 
-  def autocomplete(conn, %{"term"=> term}) do
-     term = "%#{term}%"
-     query = from(
-       o in Offer,
-       where: like(o.permalink, ^term),
-       select: %{id: o.id, permalink: o.permalink, status: o.status, offer_url: o.offer_url, preview_url: o.preview_url, video_provider: o.video_provider, vast_version: o.vast_version})
-     res = Repo.all(query)
-     H.spit res 
-     json(conn, %{valid: true, result: res})
+  def autocomplete(conn, %{"term" => term}) do
+    term = "%#{term}%"
+
+    {:ok, %{model: Offer, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
+      |> Common.add_autocomplete_result
+      |> build_response
+
   end
 
   def autocomplete(conn, _params) do
-    json(conn, %{valid: false, result: "Param 'term' is missing"})
+    json(conn, Map.get(Common.errors, :missing_term))
+  end
+
+  def build_response({:ok, %{conn: conn, autocomplete_result: res}}) do
+    json(conn, %{valid: true, result: res})
   end
 end

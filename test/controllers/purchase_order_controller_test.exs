@@ -1,8 +1,6 @@
 require Alfred.Helpers, as: H
-
 alias Tino.Test.Helpers.PurchaseOrder, as: Po
 alias Tino.Test.Helpers.Common
-
 
 defmodule Tino.PurchaseOrderControllerTest do
   use ExUnit.Case
@@ -61,6 +59,4 @@ defmodule Tino.PurchaseOrderControllerTest do
       |> Poison.decode!
     assert Map.get(res, "result", []) == query_res
   end
-
-
 end

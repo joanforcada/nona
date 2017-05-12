@@ -20,7 +20,7 @@ defmodule Tino.Enterprise do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :code, :country_id, :currency_id])
+    |> cast(params, [:name, :code, :country_id, :currency_id, :created_ts, :updated_ts])
     # |> validate_required([:user_id, :room_id])
   end
 

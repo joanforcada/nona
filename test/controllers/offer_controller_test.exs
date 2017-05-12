@@ -1,6 +1,7 @@
 require Alfred.Helpers, as: H
 
 alias Tino.Test.Helpers.Offer, as: O
+alias Tino.Test.Helpers.Common
 
 
 defmodule Tino.OfferControllerTest do
@@ -14,29 +15,46 @@ defmodule Tino.OfferControllerTest do
     O.insert_sample_row(%{"permalink" => "88885552", "status" => "active", "offer_url" => "www.admanmedia1.com", "preview_url" => "www.admanmedia.com", "video_provider" => "5", "vast_version" => "3"})
   end
 
-  test "autocomplete offer_test results", %{conn: conn}  do
-    query = from(o in Offer, where: like(o.permalink, ^("%88885555%")), select: %{"id" => o.id, "permalink" => o.permalink, "status" => o.status, "offer_url" => o.offer_url, "preview_url" => o.preview_url, "video_provider" => o.video_provider, "vast_version" => o.vast_version})
-    query_res = Repo.all(query)
+  test "autocomplete purchase order results", %{conn: conn}  do
+
+    autocomplete_action("Video Seeding", conn)
+    autocomplete_action("seeding", conn)
+    autocomplete_action("video", conn)
+    autocomplete_action("vid", conn)
+    autocomplete_action("seed", conn)
+
+  end
+
+  test "autocomplete empty result", %{conn: conn}  do
+
+    autocomplete_action("some random string", conn)
+    autocomplete_action("INtravenoso", conn)
+    autocomplete_action("CaMeL", conn)
+    autocomplete_action(" ", conn)
+
+  end
+
+  test "autocomplete no term involved", %{conn: conn} do
+
+    autocomplete_action("", conn)
     res = conn
-      |> get(offer_path(conn, :autocomplete, term: "88885555"))
+      |> get(offer_path(conn, :autocomplete))
       |> response(200)
       |> Poison.decode!
+    assert res["valid"] == false
+    assert res["result"] == "Param 'term' is required"
+  end
 
-    assert Map.get(res, "result", []) == query_res
+  def autocomplete_action(term, conn) do
 
-    query = from(o in Offer, where: like(o.permalink, ^("%8888%")), select: %{"id" => o.id, "permalink" => o.permalink, "status" => o.status, "offer_url" => o.offer_url, "preview_url" => o.preview_url, "video_provider" => o.video_provider, "vast_version" => o.vast_version})
-    query_res = Repo.all(query)
+    fields = ~w(permalink name)a
+    select_fields = ~w(id permalink name)a
+
+    query_res = Common.build_results(fields, Offer, term, select_fields)
+      |> H.Map.stringify_keys
+
     res = conn
-      |> get(offer_path(conn, :autocomplete, term: "8888"))
-      |> response(200)
-      |> Poison.decode!
-    assert Map.get(res, "result", []) == query_res
-
-
-    query = from(o in Offer, where: like(o.permalink, ^("%555%")), select: %{"id" => o.id, "permalink" => o.permalink, "status" => o.status, "offer_url" => o.offer_url, "preview_url" => o.preview_url, "video_provider" => o.video_provider, "vast_version" => o.vast_version})
-    query_res = Repo.all(query)
-    res = conn
-      |> get(offer_path(conn, :autocomplete, term: "555"))
+      |> get(offer_path(conn, :autocomplete, term: term))
       |> response(200)
       |> Poison.decode!
     assert Map.get(res, "result", []) == query_res

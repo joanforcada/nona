@@ -1,3 +1,4 @@
+require Alfred.Helpers, as: H
 defmodule Tino.Controllers.Common do
   alias Tino.Repo
   import Ecto.Query
@@ -13,7 +14,6 @@ defmodule Tino.Controllers.Common do
       from p in query, or_where: like(field(p, ^key), ^term)
     end)
     |> select([p], map(p, ^select_fields))
-    # |> select([p], struct(p, select_fields))
   end
 
   def add_autocomplete_result({:ok, %{model: model, term: term, fields: fields, select_fields: select_fields} = data}) do

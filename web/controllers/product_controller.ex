@@ -1,5 +1,6 @@
 defmodule Tino.ProductController do
   use Tino.Web, :controller
+  
   alias Tino.Product
   alias Tino.Controllers.Common
 

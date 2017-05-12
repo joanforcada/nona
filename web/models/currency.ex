@@ -16,7 +16,7 @@ defmodule Tino.Currency do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :code, :symbol])
+    |> cast(params, [:name, :code, :symbol, :created_ts, :updated_ts])
   end
 
 end

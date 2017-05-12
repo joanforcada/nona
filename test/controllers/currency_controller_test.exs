@@ -1,5 +1,6 @@
 require Alfred.Helpers, as: H
 alias Tino.Test.Helpers.Currency, as: Cu
+alias Tino.Test.Helpers.Common
 
 defmodule Tino.CurrencyControllerTest do
     use ExUnit.Case
@@ -10,7 +11,7 @@ defmodule Tino.CurrencyControllerTest do
     setup do
 
       Cu.insert_sample_row(%{"name" => "euro", "code" => "666", "symbol" => "€"})
-      Cu.insert_sample_row(%{"name" => "euro", "code" => "202", "symbol" => "€"})
+      Cu.insert_sample_row(%{"name" => "brazillian peso", "code" => "202", "symbol" => "$"})
       Cu.insert_sample_row(%{"name" => "dolar", "code" => "205", "symbol" => "$"})
 
     end
@@ -45,12 +46,11 @@ defmodule Tino.CurrencyControllerTest do
 
 
     def autocomplete_action(term, conn) do
-        # term = "%#{term}%"
-      fields = [name: "name", code: "code", symbol: "symbol"]
-      select_fields = ~w(id name code)a
 
+      fields = ~w(name code)a
+      select_fields = ~w(id name code symbol)a
 
-      query_res = build_results(fields, term, select_fields)
+      query_res = Common.build_results(fields, Currency, term, select_fields)
         |> H.Map.stringify_keys
 
       res = conn
@@ -58,22 +58,5 @@ defmodule Tino.CurrencyControllerTest do
         |> response(200)
         |> Poison.decode!
       assert Map.get(res, "result", []) == query_res
-    end
-
-    def build_results(fields, term, select_fields) do
-      term = "%#{term}%"
-      auto_query =
-      Enum.reduce(fields, Currency, fn {key, _value}, query ->
-        from cu in query, or_where: like(field(cu, ^key), ^term)
-      end)
-      #H.spit auto_query
-      |> select([cu], map(cu, ^select_fields))
-      res = Repo.all(auto_query)
-      #H.spit res
-
-      case res do
-        [] -> "There are no results for this term"
-        results -> results
-      end
     end
 end

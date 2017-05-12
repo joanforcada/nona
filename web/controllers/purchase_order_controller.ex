@@ -1,16 +1,16 @@
 defmodule Tino.PurchaseOrderController do
   use Tino.Web, :controller
 
- alias Tino.PurchaseOrder
- alias Tino.Controllers.Common
+  alias Tino.PurchaseOrder
+  alias Tino.Controllers.Common
 
- #Fields which to look for when performing autocomplete
- @autocomplete_fields  ~w(number description)a
- # Fields to select from the database (for autocomplete only (for now))
- @select_fields ~w(id number description)a
+  #Fields which to look for when performing autocomplete
+  @autocomplete_fields  ~w(number description)a
+  # Fields to select from the database (for autocomplete only (for now))
+  @select_fields ~w(id number description)a
 
 
- def create(conn, %{"purchase_order" => purchase_order_params}) do
+  def create(conn, %{"purchase_order" => purchase_order_params}) do
     permalink = "11111113" #Guardian.Plug.current_resource(conn)
     changeset = PurchaseOrder.changeset(%PurchaseOrder{}, purchase_order_params)
 
@@ -30,15 +30,15 @@ defmodule Tino.PurchaseOrderController do
   end
 
   def show(conn, %{"id" => id}) do
-      purchase_order = Repo.get!(PurchaseOrder, id)
-      render("show.json", purchase_order: purchase_order)
+    purchase_order = Repo.get!(PurchaseOrder, id)
+    render("show.json", purchase_order: purchase_order)
 
   end
 
   def update(conn, %{"id" => id, "purchase_order" => purchase_order_params}) do
 
-     purchase_order = Repo.get!(PurchaseOrder, id)
-     changeset = PurchaseOrder.changeset(%PurchaseOrder{}, purchase_order_params)
+    purchase_order = Repo.get!(PurchaseOrder, id)
+    changeset = PurchaseOrder.changeset(%PurchaseOrder{}, purchase_order_params)
 
 
     Repo.update(changeset)

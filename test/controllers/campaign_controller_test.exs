@@ -1,5 +1,6 @@
 require Alfred.Helpers, as: H
 alias Tino.Test.Helpers.Campaign, as: C
+alias Tino.Test.Helpers.Common
 
 defmodule Tino.CampaignControllerTest do
   use ExUnit.Case
@@ -14,44 +15,48 @@ defmodule Tino.CampaignControllerTest do
     C.insert_sample_row(%{"permalink" => "44444444", "name" => "cola 4"})
   end
 
-  test "autocomplete campaign_cola results", %{conn: conn}  do
+  test "autocomplete campaign cola results", %{conn: conn}  do
 
     autocomplete_action("cola", conn)
     autocomplete_action("co", conn)
     autocomplete_action("la", conn)
+    autocomplete_action("amp", conn)
+    autocomplete_action("3", conn)
+
+  end
+
+  test "autocomplete empty result", %{conn: conn}  do
+
+    autocomplete_action("some random string", conn)
+    autocomplete_action("INtravenoso", conn)
+    autocomplete_action("CaMeL", conn)
+    autocomplete_action(" ", conn)
+
+  end
+
+  test "autocomplete no term involved", %{conn: conn} do
+
+    autocomplete_action("", conn)
+    res = conn
+      |> get(campaign_path(conn, :autocomplete))
+      |> response(200)
+      |> Poison.decode!
+    assert res["valid"] == false
+    assert res["result"] == "Param 'term' is required"
   end
 
   def autocomplete_action(term, conn) do
-    # term = "%#{term}%"
-    fields = [name: "name", permalink: "permalink"]
 
+    fields = ~w(permalink name)a
+    select_fields = ~w(id permalink name)a
 
-    query_res = build_results(fields, term)
+    query_res = Common.build_results(fields, Campaign, term, select_fields)
+      |> H.Map.stringify_keys
+
     res = conn
-      |> get(product_path(conn, :autocomplete, term: term))
+      |> get(campaign_path(conn, :autocomplete, term: term))
       |> response(200)
       |> Poison.decode!
     assert Map.get(res, "result", []) == query_res
-  end
-
-  def build_results(fields, term) do
-    auto_query = Enum.reduce(fields, Campaign, fn {key, _value}, query ->
-    from p in query, or_where: like(field(p, ^key), ^term)
-    end)
-     |> select([c, _], %{"id" => c.id, "name" => c.name, "permalink" => c.permalink})
-    case Repo.all(auto_query) do
-      [] -> "There are no results for this term"
-      results -> results
-    end
-  end
-
-  test "update_campaign with new values", %{conn: conn} do
-    campaign = Repo.all(from(c in Campaign))
-    params = %{"id" => campaign.id, "name" => "cambio 1"}
-    changeset = Repo.changeset(%Campaign{}, params)
-    case Repo.update(changeset) do
-      {:ok, campaign} -> H.spit campaign
-      {:error, changeset} -> H.spit changeset
-    end
   end
 end
