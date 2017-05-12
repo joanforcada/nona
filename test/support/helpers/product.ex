@@ -1,6 +1,8 @@
 defmodule Tino.Test.Helpers.Product do
+
   alias Tino.Product
   alias Tino.Repo
+
   def get_sample_row(data) do
     Map.merge(%{
      "name" => "some product",
@@ -11,6 +13,7 @@ defmodule Tino.Test.Helpers.Product do
      "invoicing_model" => 1,
      "created_ts" => System.system_time(:nanoseconds),
      "updated_ts" => System.system_time(:nanoseconds)}, data)
+
   end
 
   def insert_sample_row(data \\ []) do

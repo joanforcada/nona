@@ -6,7 +6,7 @@ defmodule Tino.Test.Helpers.Currency do
   def get_sample_row(data) do
     Map.merge(%{
         "name" => "currency1",
-        "permalink" => "66666666",
+        "code" => "666",
         "symbol" => "80808080",
         "created_ts" => System.system_time(:nanoseconds),
         "updated_ts" => System.system_time(:nanoseconds)}, data)

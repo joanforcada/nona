@@ -18,4 +18,5 @@ defmodule Tino.Test.Helpers.Country do
     Repo.insert(changeset)
     row
   end
+
 end
