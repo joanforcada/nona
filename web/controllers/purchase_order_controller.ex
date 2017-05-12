@@ -2,6 +2,13 @@ defmodule Tino.PurchaseOrderController do
   use Tino.Web, :controller
 
  alias Tino.PurchaseOrder
+ alias Tino.Controllers.Common
+
+ #Fields which to look for when performing autocomplete
+ @autocomplete_fields  ~w(number description)a
+ # Fields to select from the database (for autocomplete only (for now))
+ @select_fields ~w(id number description)a
+
 
  def create(conn, %{"purchase_order" => purchase_order_params}) do
     permalink = "11111113" #Guardian.Plug.current_resource(conn)
@@ -48,18 +55,34 @@ defmodule Tino.PurchaseOrderController do
 
   end
 
+  @doc """
+    Searches in the database for any matches with the parameter term from the URL
+    Exmaple:
+      autocomplete(conn, %{"term" => 34904})
+      %{valid: true, result: [%{PurchaseOrder}]}
+  """
   def autocomplete(conn, %{"term" => term}) do
     term = "%#{term}%"
-    query = from(
-      po in PurchaseOrder,
-      where: like(po.number, ^term),
-      select: %{id: po.id, number: po.number, amount: po.amount})
-    res = Repo.all(query)
-    json(conn, %{valid: true, result: res})
+
+   {:ok, %{model: PurchaseOrder, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
+     |> Common.add_autocomplete_result
+     |> build_response
+
   end
 
   def autocomplete(conn, _params) do
-    json(conn, %{valid: false, result: "Param 'term' is missing"})
+    json(conn, Map.get(Common.errors, :missing_term))
+  end
+
+  @doc """
+    Builds the response to return after the action has been performed (autocomplete for now)
+    Exmaple:
+      build_response({:ok, %{conn: conn, autocomplete_result: [%{PurchaseOrder}]})
+      %{valid: true, result: [%{PurchaseOrder}]}
+  """
+
+  def build_response({:ok, %{conn: conn, autocomplete_result: res}}) do
+    json(conn, %{valid: true, result: res})
   end
 
 end

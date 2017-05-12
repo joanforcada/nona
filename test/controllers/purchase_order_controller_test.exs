@@ -1,6 +1,7 @@
 require Alfred.Helpers, as: H
 
 alias Tino.Test.Helpers.PurchaseOrder, as: Po
+alias Tino.Test.Helpers.Common
 
 
 defmodule Tino.PurchaseOrderControllerTest do
@@ -16,19 +17,50 @@ defmodule Tino.PurchaseOrderControllerTest do
     Po.insert_sample_row(%{"amount" => 55.524253446225, "number" => "99996333"})
   end
 
-  test "autocomplete purchase_order_test results", %{conn: conn}  do
-    autocomplete_action("99993333", conn)
-    autocomplete_action("9999", conn)
-    autocomplete_action("333", conn)
+  test "autocomplete purchase order results", %{conn: conn}  do
+
+    autocomplete_action("Video Seeding", conn)
+    autocomplete_action("seeding", conn)
+    autocomplete_action("video", conn)
+    autocomplete_action("vid", conn)
+    autocomplete_action("seed", conn)
+
+  end
+
+  test "autocomplete empty result", %{conn: conn}  do
+
+    autocomplete_action("some random string", conn)
+    autocomplete_action("INtravenoso", conn)
+    autocomplete_action("CaMeL", conn)
+    autocomplete_action(" ", conn)
+
+  end
+
+  test "autocomplete no term involved", %{conn: conn} do
+
+    autocomplete_action("", conn)
+    res = conn
+      |> get(purchase_order_path(conn, :autocomplete))
+      |> response(200)
+      |> Poison.decode!
+    assert res["valid"] == false
+    assert res["result"] == "Param 'term' is required"
   end
 
   def autocomplete_action(term, conn) do
-    query = from(po in PurchaseOrder, where: like(po.number, ^("%#{term}%")), select: %{"id" => po.id, "number" => po.number,  "amount" => po.amount})
-    query_res = Repo.all(query)
+
+    fields = ~w(description permalink number)a
+    select_fields = ~w(id description number)a
+
+    query_res = Common.build_results(fields, PurchaseOrder, term, select_fields)
+      |> H.Map.stringify_keys
+
     res = conn
       |> get(purchase_order_path(conn, :autocomplete, term: term))
       |> response(200)
       |> Poison.decode!
     assert Map.get(res, "result", []) == query_res
   end
+
+
 end

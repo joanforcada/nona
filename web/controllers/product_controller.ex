@@ -1,12 +1,10 @@
 defmodule Tino.ProductController do
   use Tino.Web, :controller
+  alias Tino.Product
   alias Tino.Controllers.Common
 
-  # @autocomplete_fields = ["name", "product_format", "code"]
-  @autocomplete_fields [name: "name", code: "code", product_format: "product_format"]
+  @autocomplete_fields ~w(name code product_format)a
   @select_fields ~w(id name code)a
-
-  alias Tino.Product
 
   def create(conn, %{"product" => product_params}) do
      permalink = "11111114" #Guardian.Plug.current_resource(conn)
@@ -55,10 +53,6 @@ defmodule Tino.ProductController do
 
    def autocomplete(conn, %{"term" => term}) do
      term = "%#{term}%"
-
-    #  auto_query = Enum.reduce(@autocomplete_fields, Product, fn {key, _value}, query ->
-    #    from p in query, or_where: like(field(p, ^key), ^term)
-    #  end)
 
     {:ok, %{model: Product, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
       |> Common.add_autocomplete_result

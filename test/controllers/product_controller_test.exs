@@ -1,5 +1,6 @@
 require Alfred.Helpers, as: H
 alias Tino.Test.Helpers.Product, as: Pr
+alias Tino.Test.Helpers.Common
 
 defmodule Tino.ProductControllerTest do
   use ExUnit.Case
@@ -46,33 +47,16 @@ defmodule Tino.ProductControllerTest do
 
   def autocomplete_action(term, conn) do
 
-    fields = [name: "name", code: "code", product_format: "product_format"]
+    fields = ~w(name code product_format)a
     select_fields = ~w(id name code)a
 
-    query_res = build_results(fields, term, select_fields)
+    query_res = Common.build_results(fields, Product, term, select_fields)
       |> H.Map.stringify_keys
-      
+
     res = conn
       |> get(product_path(conn, :autocomplete, term: term))
       |> response(200)
       |> Poison.decode!
     assert Map.get(res, "result", []) == query_res
   end
-
-  def build_results(fields, term, select_fields) do
-    term = "%#{term}%"
-    auto_query =
-    Enum.reduce(fields, Product, fn {key, _value}, query ->
-      from p in query, or_where: like(field(p, ^key), ^term)
-    end)
-    |> select([p], map(p, ^select_fields))
-    res = Repo.all(auto_query)
-
-    case res do
-      [] -> "There are no results for this term"
-      results -> results
-    end
-  end
-
-
 end

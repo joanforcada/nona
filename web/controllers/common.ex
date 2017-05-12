@@ -9,7 +9,7 @@ defmodule Tino.Controllers.Common do
   }
 
   def build_autocomplete_query(fields, model, term, select_fields) do
-    Enum.reduce(fields, model, fn {key, _value}, query ->
+    Enum.reduce(fields, model, fn key, query ->
       from p in query, or_where: like(field(p, ^key), ^term)
     end)
     |> select([p], map(p, ^select_fields))
