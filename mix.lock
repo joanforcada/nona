@@ -1,4 +1,4 @@
-%{"alfred": {:git, "git@github.com:admanmedia/alfred.git", "9ad617e65c64266bd116a75dc9c1a38f3fd1ad1a", []},
+%{"alfred": {:git, "git@github.com:admanmedia/alfred.git", "b7d795c459eb42e1b714baa20b2edb2587b4d35a", []},
   "alfred_http": {:git, "git@github.com:admanmedia/alfred_http.git", "1ab9a980932469dba4765cb17ac5a5a01a91ad4b", []},
   "bottler": {:git, "https://github.com/rubencaro/bottler.git", "5a6fadd55c09d8c09caa0e17704daa8e2898c24c", []},
   "certifi": {:hex, :certifi, "1.0.0", "1c787a85b1855ba354f0b8920392c19aa1d06b0ee1362f9141279620a5be2039", [:rebar3], []},

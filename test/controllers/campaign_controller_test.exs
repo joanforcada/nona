@@ -44,4 +44,14 @@ defmodule Tino.CampaignControllerTest do
       results -> results
     end
   end
+
+  test "update_campaign with new values", %{conn: conn} do
+    campaign = Repo.all(from(c in Campaign))
+    params = %{"id" => campaign.id, "name" => "cambio 1"}
+    changeset = Repo.changeset(%Campaign{}, params)
+    case Repo.update(changeset) do
+      {:ok, campaign} -> H.spit campaign
+      {:error, changeset} -> H.spit changeset
+    end
+  end
 end

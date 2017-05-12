@@ -66,6 +66,10 @@ defmodule Tino.ProductController do
 
    end
 
+   def autocomplete(conn, _params) do
+     json(conn, Map.get(Common.errors, :missing_term))
+   end
+
    def build_response({:ok, %{conn: conn, autocomplete_result: res}}) do
      json(conn, %{valid: true, result: res})
    end
