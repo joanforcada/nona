@@ -7,23 +7,14 @@ defmodule Tino.ProductController do
   @autocomplete_fields ~w(name code product_format)a
   @select_fields ~w(id name code)a
 
-  def create(conn, %{"product" => product_params}) do
-     permalink = "11111114" #Guardian.Plug.current_resource(conn)
-     changeset = Product.changeset(%Product{}, product_params)
+    def create(conn, %{"product" => product_params}) do
+      # permalink = "11111111" #Guardian.Plug.current_resource(conn)
+          # campaign_params = %{"permalink" => <value>}
+      # changeset = Campaign.changeset(%Campaign{}, campaign_params)
+      {:ok, %{model: Offer, params: product_params, conn: conn}}
+      |>Common.add_create_result
 
-     case Repo.insert(changeset) do
-       {:ok, product} ->
-         conn
-         |> put_status(:created)
-         |> json(%{valid: true, result: %{permalink: product.permalink, id: product.id}}) #retornes plantilla
-
-       {:error, changeset} ->
-         conn
-         |> put_status(:unprocessable_entity)
-         |> render(Tino.ChangesetView, "error.json", changeset: changeset)
-     end
-
-   end
+    end
 
    def show(conn, %{"id" => id}) do
        product = Repo.get!(Product, id)
@@ -31,22 +22,11 @@ defmodule Tino.ProductController do
 
    end
 
-   def update(conn, %{"id" => id, "product" => product_params}) do
+   def update(conn, %{"id" => id, "params" => product_params}) do
 
-      product = Repo.get!(Product, id)
-      changeset = Ecto.Changeset.change(product, product_params)
+       {:ok, %{id: id, model: Product, params: product_params, conn: conn}}
+       |> Common.add_update_result
 
-
-     case Repo.update(changeset) do
-       {:ok, campaign} ->
-        conn
-        |> put_status(:created)
-        |> render("show.json", campaign: campaign) #retornes plantilla
-
-       {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Tino.ChangesetView, "error.json", changeset: changeset)
 
    end
 

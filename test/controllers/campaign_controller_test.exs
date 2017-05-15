@@ -23,6 +23,7 @@ defmodule Tino.CampaignControllerTest do
     autocomplete_action("amp", conn)
     autocomplete_action("3", conn)
 
+
   end
 
   test "autocomplete empty result", %{conn: conn}  do
@@ -51,7 +52,7 @@ defmodule Tino.CampaignControllerTest do
     select_fields = ~w(id permalink name)a
 
     query_res = Common.build_results(fields, Campaign, term, select_fields)
-      |> H.Map.stringify_keys
+    |> H.Map.stringify_keys
 
     res = conn
       |> get(campaign_path(conn, :autocomplete, term: term))

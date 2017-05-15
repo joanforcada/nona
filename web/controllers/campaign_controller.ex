@@ -1,3 +1,4 @@
+require Alfred.Helpers, as: H
 defmodule Tino.CampaignController do
   use Tino.Web, :controller
 
@@ -9,21 +10,12 @@ defmodule Tino.CampaignController do
 
   def create(conn, %{"campaign" => campaign_params}) do
     # permalink = "11111111" #Guardian.Plug.current_resource(conn)
-
-    changeset = Campaign.changeset(%Campaign{}, campaign_params)
-
-    case Repo.insert(changeset) do
-      {:ok, campaign} ->
-
-        conn
-        |> put_status(:created)
-        |> json(%{valid: true, result: %{permalink: campaign.permalink, id: campaign.id}}) #retorne#retornes plantilla
-
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Tino.ChangesetView, "error.json", changeset: changeset)
-    end
+    permalink = H.hex(4)
+    Map.put(campaign_params, "permalink", permalink)
+    # campaign_params = %{"permalink" => <value>}
+    # changeset = Campaign.changeset(%Campaign{}, campaign_params)
+    {:ok, %{model: Campaign, params: campaign_params, conn: conn}}
+    |>Common.add_create_result
 
   end
 
@@ -34,23 +26,11 @@ defmodule Tino.CampaignController do
 
   end
 
-  def update(conn, %{"id" => id, "campaign" => campaign_params}) do
+  def update(conn, %{"id" => id, "params" => campaign_params}) do
 
-     campaign = Repo.get!(Campaign, id)
-     changeset = Campaign.changeset(%Campaign{}, campaign_params)
+      {:ok, %{id: id, model: Campaign, params: campaign_params, conn: conn}}
+      |> Common.add_update_result
 
-
-    Repo.update(changeset)
-      #{:ok, campaign} ->
-
-      #  conn
-      #  |> put_status(:created)
-      #  |> render("show.json", campaign: campaign) #retornes plantilla
-
-      #{:error, changeset} ->
-      #  conn
-      #  |> put_status(:unprocessable_entity)
-      #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
 
   end
 

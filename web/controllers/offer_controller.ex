@@ -1,7 +1,7 @@
 require Alfred.Helpers, as: H
 defmodule Tino.OfferController do
   use Tino.Web, :controller
-  
+
   alias Tino.Offer
   alias Tino.Controllers.Common
 
@@ -9,21 +9,13 @@ defmodule Tino.OfferController do
   @select_fields ~w(id name permalink)a
 
   def create(conn, %{"offer" => offer_params}) do
-    permalink = "11111112" #Guardian.Plug.current_resource(conn)
-    changeset = Offer.changeset(%Offer{}, offer_params)
-
-    case Repo.insert(changeset) do
-      {:ok, offer} ->
-
-        conn
-        |> put_status(:created)
-        |> render("show.json", offer: offer) #retornes plantilla
-
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Tino.ChangesetView, "error.json", changeset: changeset)
-    end
+    # permalink = "11111111" #Guardian.Plug.current_resource(conn)
+    permalink = H.hex(4)
+    Map.put(offer_params, "permalink", permalink)
+    # campaign_params = %{"permalink" => <value>}
+    # changeset = Campaign.changeset(%Campaign{}, campaign_params)
+    {:ok, %{model: Offer, params: offer_params, conn: conn}}
+    |>Common.add_create_result
 
   end
 
@@ -33,23 +25,11 @@ defmodule Tino.OfferController do
 
   end
 
-  def update(conn, %{"id" => id, "offer" => offer_params}) do
+  def update(conn, %{"id" => id, "params" => offer_params}) do
 
-     offer = Repo.get!(Offer, id)
-     changeset = Offer.changeset(%Offer{}, offer_params)
+      {:ok, %{id: id, model: Offer, params: offer_params, conn: conn}}
+      |> Common.add_update_result
 
-
-    Repo.update(changeset)
-      #{:ok, campaign} ->
-
-      #  conn
-      #  |> put_status(:created)
-      #  |> render("show.json", campaign: campaign) #retornes plantilla
-
-      #{:error, changeset} ->
-      #  conn
-      #  |> put_status(:unprocessable_entity)
-    #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
 
   end
 

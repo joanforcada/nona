@@ -10,22 +10,12 @@ defmodule Tino.PurchaseOrderController do
   @select_fields ~w(id number description)a
 
 
-  def create(conn, %{"purchase_order" => purchase_order_params}) do
-    permalink = "11111113" #Guardian.Plug.current_resource(conn)
-    changeset = PurchaseOrder.changeset(%PurchaseOrder{}, purchase_order_params)
-
-    case Repo.insert(changeset) do
-      {:ok, purchase_order} ->
-
-        conn
-        |> put_status(:created)
-        |> render("show.json", purchase_order: purchase_order) #retornes plantilla
-
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Tino.ChangesetView, "error.json", changeset: changeset)
-    end
+  def create(conn, %{"campaign" => campaign_params}) do
+    # permalink = "11111111" #Guardian.Plug.current_resource(conn)
+    # campaign_params = %{"permalink" => <value>}
+    # changeset = Campaign.changeset(%Campaign{}, campaign_params)
+    {:ok, %{model: Campaign, params: campaign_params, conn: conn}}
+    |>Common.add_create_result
 
   end
 
@@ -35,26 +25,13 @@ defmodule Tino.PurchaseOrderController do
 
   end
 
-  def update(conn, %{"id" => id, "purchase_order" => purchase_order_params}) do
+  def update(conn, %{"id" => id, "params" => purchase_order_params}) do
 
-    purchase_order = Repo.get!(PurchaseOrder, id)
-    changeset = PurchaseOrder.changeset(%PurchaseOrder{}, purchase_order_params)
+      {:ok, %{id: id, model: PurchaseOrder, params: purchase_order_params, conn: conn}}
+      |> Common.add_update_result
 
-
-    Repo.update(changeset)
-      #{:ok, campaign} ->
-
-      #  conn
-      #  |> put_status(:created)
-      #  |> render("show.json", campaign: campaign) #retornes plantilla
-
-      #{:error, changeset} ->
-      #  conn
-      #  |> put_status(:unprocessable_entity)
-      #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
 
   end
-
   @doc """
     Searches in the database for any matches with the parameter term from the URL
     Exmaple:
