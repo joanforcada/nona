@@ -1,6 +1,6 @@
 defmodule Tino.CountryController do
   use Tino.Web, :controller
-  
+
   alias Tino.Country
   alias Tino.Controllers.Common
 
@@ -35,20 +35,20 @@ defmodule Tino.CountryController do
    def update(conn, %{"id" => id, "country" => country_params}) do
 
       country = Repo.get!(Country, id)
-      changeset = Country.changeset(%Country{}, country_params)
+      changeset = Ecto.Changeset.change(country, country_params)
 
 
-     Repo.update(changeset)
-       #{:ok, campaign} ->
+      case Repo.update(changeset) do
+        {:ok, country} ->
+          conn
+          |> put_status(:created)
+          |> build_response()
 
-       #  conn
-       #  |> put_status(:created)
-       #  |> render("show.json", campaign: campaign) #retornes plantilla
-
-       #{:error, changeset} ->
-       #  conn
-       #  |> put_status(:unprocessable_entity)
-       #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> render(Tino.ChangesetView, "error.json", changeset: changeset)
+      end
 
    end
 

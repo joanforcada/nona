@@ -1,6 +1,6 @@
 defmodule Tino.ProductController do
   use Tino.Web, :controller
-  
+
   alias Tino.Product
   alias Tino.Controllers.Common
 
@@ -13,7 +13,6 @@ defmodule Tino.ProductController do
 
      case Repo.insert(changeset) do
        {:ok, product} ->
-
          conn
          |> put_status(:created)
          |> json(%{valid: true, result: %{permalink: product.permalink, id: product.id}}) #retornes plantilla
@@ -35,20 +34,19 @@ defmodule Tino.ProductController do
    def update(conn, %{"id" => id, "product" => product_params}) do
 
       product = Repo.get!(Product, id)
-      changeset = Product.changeset(%Product{}, product_params)
+      changeset = Ecto.Changeset.change(product, product_params)
 
 
-     Repo.update(changeset)
-       #{:ok, campaign} ->
+     case Repo.update(changeset) do
+       {:ok, campaign} ->
+        conn
+        |> put_status(:created)
+        |> render("show.json", campaign: campaign) #retornes plantilla
 
-       #  conn
-       #  |> put_status(:created)
-       #  |> render("show.json", campaign: campaign) #retornes plantilla
-
-       #{:error, changeset} ->
-       #  conn
-       #  |> put_status(:unprocessable_entity)
-       #  |> render(Tino.ChangesetView, "error.json", changeset: changeset)
+       {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Tino.ChangesetView, "error.json", changeset: changeset)
 
    end
 
