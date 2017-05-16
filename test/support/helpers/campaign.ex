@@ -1,3 +1,4 @@
+require Alfred.Helpers, as: H
 defmodule Tino.Test.Helpers.Campaign do
   alias Tino.Repo
   alias Tino.Campaign
@@ -12,9 +13,11 @@ defmodule Tino.Test.Helpers.Campaign do
   end
 
   def insert_sample_row(data \\ []) do
-    row = get_sample_row data
+    row = data |> get_sample_row
     changeset = Campaign.changeset(%Campaign{}, row)
     Repo.insert(changeset)
     row
   end
+
+
 end

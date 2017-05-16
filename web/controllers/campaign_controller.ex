@@ -27,11 +27,8 @@ defmodule Tino.CampaignController do
   end
 
   def update(conn, %{"id" => id, "params" => campaign_params}) do
-
       {:ok, %{id: id, model: Campaign, params: campaign_params, conn: conn}}
       |> Common.add_update_result
-
-
   end
 
   def autocomplete(conn, %{"term" => term}) do

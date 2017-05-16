@@ -2,9 +2,14 @@ require Alfred.Helpers, as: H
 alias Tino.Test.Helpers.Campaign, as: C
 alias Tino.Test.Helpers.Common
 
+alias Tino.Repo
+import Ecto.Query
+
 defmodule Tino.CampaignControllerTest do
   use ExUnit.Case
   use Tino.ConnCase
+
+
 
   alias Tino.Campaign
 
@@ -46,7 +51,20 @@ defmodule Tino.CampaignControllerTest do
     assert res["result"] == "Param 'term' is required"
   end
 
-  def autocomplete_action(term, conn) do
+  test "create new value", %{conn: conn} do
+    create_new_action("term", conn)
+  end
+
+
+  test "update value", %{conn: conn} do
+    update_value("term", conn)
+  end
+
+  defp update_value(term, conn) do
+
+  end
+
+  defp autocomplete_action(term, conn) do
 
     fields = ~w(permalink name)a
     select_fields = ~w(id permalink name)a
@@ -60,4 +78,24 @@ defmodule Tino.CampaignControllerTest do
       |> Poison.decode!
     assert Map.get(res, "result", []) == query_res
   end
+
+  defp create_new_action(term, conn) do
+
+    create_value = (C.insert_sample_row(%{"permalink" => "00000000", "name" => "cola 00"}))
+    query = from c in Campaign, where: c.permalink == "00000000", select: %{name: c.name, permalink: c.permalink}
+
+    query_res = Repo.all(query)
+
+    H.spit(query_res)
+
+    #res = conn
+    #  |> post(campaign_path(conn, :create, term: term))
+    #  |> response(200)
+    #  |> Poison.decode!
+
+    #assert Map.get(res, "result", []) == query_res
+
+  end
+
+
 end
