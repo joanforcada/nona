@@ -12,6 +12,7 @@ defmodule Tino.CampaignController do
     # permalink = "11111111" #Guardian.Plug.current_resource(conn)
     permalink = H.hex(4)
     Map.put(campaign_params, "permalink", permalink)
+    IO.inspect(campaign_params)
     # campaign_params = %{"permalink" => <value>}
     # changeset = Campaign.changeset(%Campaign{}, campaign_params)
     {:ok, %{model: Campaign, params: campaign_params, conn: conn}}
@@ -19,7 +20,7 @@ defmodule Tino.CampaignController do
 
   end
 
-  def show(_conn, %{"id" => id}) do
+  def show(conn, %{"id" => id}) do
 
       campaign = Repo.get!(Campaign, id)
       render("show.json", campaign: campaign)

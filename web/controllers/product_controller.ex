@@ -8,17 +8,14 @@ defmodule Tino.ProductController do
   @select_fields ~w(id name code)a
 
     def create(conn, %{"product" => product_params}) do
-      # permalink = "11111111" #Guardian.Plug.current_resource(conn)
-          # campaign_params = %{"permalink" => <value>}
-      # changeset = Campaign.changeset(%Campaign{}, campaign_params)
-      {:ok, %{model: Offer, params: product_params, conn: conn}}
+      {:ok, %{model: Product, params: product_params, conn: conn}}
       |>Common.add_create_result
 
     end
 
-   def show(conn, %{"id" => id}) do
+   def show(_conn, %{"id" => id}) do
        product = Repo.get!(Product, id)
-       render("show.json", product: product)
+
 
    end
 
@@ -26,7 +23,6 @@ defmodule Tino.ProductController do
 
        {:ok, %{id: id, model: Product, params: product_params, conn: conn}}
        |> Common.add_update_result
-
 
    end
 
