@@ -53,10 +53,7 @@ defmodule Tino.CampaignControllerTest do
 
     defp autocomplete_action(term, conn) do
 
-      fields = ~w(permalink name)a
-      select_fields = ~w(id permalink name)a
-
-      query_res = Common.build_results(fields, Campaign, term, select_fields)
+      query_res = Common.build_results(Campaign.autocomplete_fields, Campaign, term, Campaign.select_fields)
       |> H.Map.stringify_keys
 
       res = conn
@@ -69,17 +66,19 @@ defmodule Tino.CampaignControllerTest do
 
   describe "POST /create" do
     test "create new value", %{conn: conn} do
-      create_new_action("term", conn)
+      create_new_action(conn)
     end
 
 
-    defp create_new_action(term, conn) do
+    defp create_new_action(conn) do
+
+      query = from c in Campaign, where: c.permalink == "00000000", select: map(c, ^Campaign.select_fields)
+      query_res = Repo.all(query)
+      assert length(query_res) == 0
 
       create_value = (C.insert_sample_row(%{"permalink" => "00000000", "name" => "cola 00"}))
-      query = from c in Campaign, where: c.permalink == "00000000", select: %{name: c.name, permalink: c.permalink}
 
       query_res = Repo.all(query)
-
       assert length(query_res) == 1
 
       Repo.delete_all(Campaign)
@@ -89,7 +88,16 @@ defmodule Tino.CampaignControllerTest do
        |> response(200)
        |> Poison.decode!
 
-      assert Map.get(res, "result", []) == query_res
+      query = from c in Campaign, select: map(c, ^Campaign.select_fields)
+      query_res = Repo.all(query)
+      assert length(query_res) == 1
+      first_res = query_res
+        |> H.spit
+        |> H.Map.stringify_keys
+        |> H.spit
+        |> List.first
+        |> H.spit
+      assert Map.get(res, "result", []) == first_res
 
     end
   end

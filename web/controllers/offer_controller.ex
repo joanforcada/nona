@@ -10,12 +10,12 @@ defmodule Tino.OfferController do
 
   def create(conn, %{"offer" => offer_params}) do
     # permalink = "11111111" #Guardian.Plug.current_resource(conn)
-    permalink = H.hex(4)
-    Map.put(offer_params, "permalink", permalink)
+    changeset = Offer.changeset(%Offer{}, offer_params)
+      |> Common.generate_unique_permalink(Offer)
     # campaign_params = %{"permalink" => <value>}
     # changeset = Campaign.changeset(%Campaign{}, campaign_params)
-    {:ok, %{model: Offer, params: offer_params, conn: conn}}
-    |>Common.add_create_result
+    {:ok, %{model: Offer, changeset: changeset, conn: conn}}
+      |>Common.add_create_result
 
   end
 

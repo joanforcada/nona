@@ -8,15 +8,15 @@ defmodule Tino.ProductController do
   @select_fields ~w(id name code)a
 
     def create(conn, %{"product" => product_params}) do
-      {:ok, %{model: Product, params: product_params, conn: conn}}
+
+      changeset = Product.changeset(%Product{}, product_params)
+      {:ok, %{model: Product, changeset: changeset, conn: conn}}
       |>Common.add_create_result
 
     end
 
    def show(_conn, %{"id" => id}) do
-       product = Repo.get!(Product, id)
-
-
+     product = Repo.get!(Product, id)
    end
 
    def update(conn, %{"id" => id, "params" => product_params}) do

@@ -5,19 +5,16 @@ defmodule Tino.CampaignController do
   alias Tino.Campaign
   alias Tino.Controllers.Common
 
-  @autocomplete_fields ~w(name permalink)a
-  @select_fields ~w(id name permalink)a
-
   def create(conn, %{"campaign" => campaign_params}) do
     # permalink = "11111111" #Guardian.Plug.current_resource(conn)
-    IO.inspect(campaign_params)
-    permalink = H.String.hex(4)
-    Map.put(campaign_params, "permalink", permalink)
-    IO.inspect(campaign_params)
+
+
+    changeset = Campaign.changeset(%Campaign{}, campaign_params)
+      |> Common.generate_unique_permalink(Campaign)
     # campaign_params = %{"permalink" => <value>}
     # changeset = Campaign.changeset(%Campaign{}, campaign_params)
-    {:ok, %{model: Campaign, params: campaign_params, conn: conn}}
-      |>Common.add_create_result
+    {:ok, %{model: Campaign, changeset: changeset, conn: conn, select_fields: Campaign.select_fields}}
+      |> Common.add_create_result
 
   end
 
@@ -36,7 +33,7 @@ defmodule Tino.CampaignController do
   def autocomplete(conn, %{"term" => term}) do
     term = "%#{term}%"
 
-    {:ok, %{model: Campaign, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
+    {:ok, %{model: Campaign, term: term, fields: Campaign.autocomplete_fields, select_fields: Campaign.select_fields, conn: conn}}
       |> Common.add_autocomplete_result
       |> build_response
   end
