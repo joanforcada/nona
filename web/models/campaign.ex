@@ -17,7 +17,7 @@ defmodule Tino.Campaign do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :permalink, :enterprise_id, :created_ts, :updated_ts])
+    |> cast(params, [:name, :permalink, :created_ts, :updated_ts])
   end
 
 end

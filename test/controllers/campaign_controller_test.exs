@@ -80,13 +80,12 @@ defmodule Tino.CampaignControllerTest do
 
       query_res = Repo.all(query)
 
-      H.spit(query_res)
       assert length(query_res) == 1
 
       Repo.delete_all(Campaign)
 
       res = conn
-       |> post(campaign_path(conn, :create, %{}))
+       |> post(campaign_path(conn, :create, %{"campaign" => %{name: "cola 00"}}))
        |> response(200)
        |> Poison.decode!
 

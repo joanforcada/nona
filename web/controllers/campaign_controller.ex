@@ -10,13 +10,14 @@ defmodule Tino.CampaignController do
 
   def create(conn, %{"campaign" => campaign_params}) do
     # permalink = "11111111" #Guardian.Plug.current_resource(conn)
-    permalink = H.hex(4)
+    IO.inspect(campaign_params)
+    permalink = H.String.hex(4)
     Map.put(campaign_params, "permalink", permalink)
     IO.inspect(campaign_params)
     # campaign_params = %{"permalink" => <value>}
     # changeset = Campaign.changeset(%Campaign{}, campaign_params)
     {:ok, %{model: Campaign, params: campaign_params, conn: conn}}
-    |>Common.add_create_result
+      |>Common.add_create_result
 
   end
 

@@ -50,23 +50,21 @@ defmodule Tino.Controllers.Common do
   end
 
 
-  def add_create_result({:ok, %{id: id, model: model, params: params, conn: conn}} ) do
+  def add_create_result({:ok, %{model: model, params: params, conn: conn}} ) do
 
+    changeset = model.changeset(%model{}, params)
 
-  changeset = model.changeset(model, params)
-
-  case Repo.insert(changeset) do
-    {:ok, model} ->
-      conn
-      |> put_status(:created)
-      |> render("show.json", :model)
-      #|> json(conn, %{valid: true, result: model})
-    {:error, changeset} ->
-      conn
-      |> put_status(:unprocessable_entity)
-      |> render(Tino.ChangesetView, "error.json", changeset: changeset)
-  end
-
+    case Repo.insert(changeset) do
+      {:ok, model} ->
+        conn
+        |> put_status(:created)
+        |> render("show.json", :model)
+        #|> json(conn, %{valid: true, result: model})
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> render(Tino.ChangesetView, "error.json", changeset: changeset)
+    end
   end
 
   def errors do
