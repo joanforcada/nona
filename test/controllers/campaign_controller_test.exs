@@ -68,7 +68,7 @@ defmodule Tino.CampaignControllerTest do
       params = %{name: "a valid campaign", permalink: "91204393"}
 
       # get the permalink for multiuse purposes
-      permalink = Map.get(params, :permalink, "")
+      permalink = Map.get(params, :permalink)
       # Check that the query has all the setup values (4 in this case)
       query_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(query_res) == 4
@@ -89,9 +89,12 @@ defmodule Tino.CampaignControllerTest do
 
       res = controller_call(conn, params)
 
-      query_res = campaign_query(permalink)
+      query_res = Map.get(res, "result")
+        |> Map.get("permalink")
+        |> campaign_query
+
       assert length(query_res) == 1
-      first_res = Common.stringify_list(query_res)
+      first_res = Common.stringify_element(query_res)
         |> List.first
       assert Map.get(res, "result", []) == first_res
     end
@@ -115,9 +118,11 @@ defmodule Tino.CampaignControllerTest do
 
       res = controller_call(conn, params)
 
+
       query_res = campaign_query(permalink)
       assert length(query_res) == 0
-      first_res = Common.stringify_list(query_res)
+      first_res = Common.stringify_element(query_res)
+        |> List.first
       assert Map.get(res, "result", []) == first_res
     end
 

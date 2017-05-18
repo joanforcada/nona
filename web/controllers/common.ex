@@ -57,11 +57,10 @@ defmodule Tino.Controllers.Common do
         result = Map.take(res, select_fields)
         conn
         |> json(%{valid: true, result: result})
-        # |> render("show.json", :model)
+
       {:error, changeset} ->
         conn
-        |> json(%{valid: false, result: changeset})
-          # |> render(Tino.ChangesetView, "error.json", changeset: changeset)
+        |> json(%{valid: false, result: Enum.into(changeset.errors, %{})})
     end
   end
 

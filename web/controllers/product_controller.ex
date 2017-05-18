@@ -9,7 +9,7 @@ defmodule Tino.ProductController do
     changeset = Product.changeset(%Product{}, product_params)
 
     {:ok, %{model: Product, changeset: changeset, conn: conn, select_fields: Product.select_fields}}
-    |>Common.add_create_result
+    |> Common.add_create_result
   end
 
   def show(conn, %{"id" => id}) do

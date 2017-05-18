@@ -1,3 +1,4 @@
+alias Alfred.Helpers, as: H
 defmodule Tino.Test.Helpers.Common do
 
   alias Tino.Repo
@@ -25,13 +26,8 @@ defmodule Tino.Test.Helpers.Common do
 
   def stringify_list([]), do: []
 
-  def stringify_list(list) when is_list(list) do
-    list
-    |> H.Map.stringify_keys
-  end
-
-  def stringify_element(map) when is_map(map) do
-    H.Map.stringify_keys(map)
+  def stringify_element(element) do
+    H.Map.stringify_keys(element)
   end
 
 

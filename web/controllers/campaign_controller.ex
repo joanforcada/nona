@@ -8,7 +8,6 @@ defmodule Tino.CampaignController do
   def create(conn, %{"campaign" => campaign_params}) do
     # permalink = "11111111" #Guardian.Plug.current_resource(conn)
 
-
     changeset = Campaign.changeset(%Campaign{}, campaign_params)
       |> Common.generate_unique_permalink(Campaign)
     # campaign_params = %{"permalink" => <value>}
