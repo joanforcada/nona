@@ -15,8 +15,9 @@ defmodule Tino.ProductController do
 
     end
 
-   def show(_conn, %{"id" => id}) do
+   def show(conn, %{"id" => id}) do
      product = Repo.get!(Product, id)
+     render("show.json", product: product)
    end
 
    def update(conn, %{"id" => id, "params" => product_params}) do

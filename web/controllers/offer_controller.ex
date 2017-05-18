@@ -5,16 +5,15 @@ defmodule Tino.OfferController do
   alias Tino.Offer
   alias Tino.Controllers.Common
 
-  @autocomplete_fields ~w(name permalink)a
-  @select_fields ~w(id name permalink)a
-
   def create(conn, %{"offer" => offer_params}) do
     # permalink = "11111111" #Guardian.Plug.current_resource(conn)
+
+
     changeset = Offer.changeset(%Offer{}, offer_params)
       |> Common.generate_unique_permalink(Offer)
     # campaign_params = %{"permalink" => <value>}
     # changeset = Campaign.changeset(%Campaign{}, campaign_params)
-    {:ok, %{model: Offer, changeset: changeset, conn: conn}}
+    {:ok, %{model: Offer, changeset: changeset, conn: conn, select_fields: Offer.select_fields}}
       |>Common.add_create_result
 
   end
@@ -36,7 +35,7 @@ defmodule Tino.OfferController do
   def autocomplete(conn, %{"term" => term}) do
     term = "%#{term}%"
 
-    {:ok, %{model: Offer, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
+    {:ok, %{model: Offer, term: term, fields: Offer.autocomplete_fields, select_fields: Offer.select_fields, conn: conn}}
       |> Common.add_autocomplete_result
       |> build_response
 

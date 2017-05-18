@@ -90,7 +90,9 @@ defmodule Tino.Controllers.Common do
     # changeset
     permalink = H.String.hex(4)
     query = from(m in model, where: m.permalink == ^permalink, select: %{permalink: m.permalink})
+
     res = Repo.all(query)
+
     case res do
       [] -> Ecto.Changeset.put_change(changeset, :permalink, permalink)
       _ -> generate_unique_permalink(changeset, model)

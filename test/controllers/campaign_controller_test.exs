@@ -9,8 +9,6 @@ defmodule Tino.CampaignControllerTest do
   use Tino.ConnCase
   use ExUnit.Case, async: true
 
-
-
   alias Tino.Campaign
 
   setup do
@@ -108,6 +106,8 @@ defmodule Tino.CampaignControllerTest do
     end
 
     defp update_value(term, conn) do
+
+
 
     end
   end

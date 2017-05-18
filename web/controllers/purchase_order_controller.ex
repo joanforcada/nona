@@ -11,13 +11,10 @@ defmodule Tino.PurchaseOrderController do
 
 
   def create(conn, %{"purchase_order" => purchase_order_params}) do
-    # permalink = "11111111" #Guardian.Plug.current_resource(conn)
-    # campaign_params = %{"permalink" => <value>}
+
     changeset = PurchaseOrder.changeset(%PurchaseOrder{}, purchase_order_params)
-    # campaign_params = %{"permalink" => <value>}
-    # changeset = Campaign.changeset(%Campaign{}, campaign_params)
     {:ok, %{model: PurchaseOrder, changeset: changeset, conn: conn}}
-      |>Common.add_create_result
+    |>Common.add_create_result
 
   end
 

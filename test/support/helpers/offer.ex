@@ -1,5 +1,5 @@
+require Alfred.Helpers, as: H
 defmodule Tino.Test.Helpers.Offer do
-
   alias Tino.Offer
   alias Tino.Repo
 
@@ -10,7 +10,7 @@ defmodule Tino.Test.Helpers.Offer do
         "status" => "active",
         "offer_url" => "www.admanmedia.com",
         "preview_url" => "www.admanmedia.com/preview",
-        "video_provider" => "html5",
+        "video_provider" => 5,
         "vast_version" => 3,
         "created_ts" => System.system_time(:nanoseconds),
         "updated_ts" => System.system_time(:nanoseconds)}, data)
@@ -22,5 +22,6 @@ defmodule Tino.Test.Helpers.Offer do
     changeset = Offer.changeset(%Offer{}, row)
     Repo.insert(changeset)
     row
+
   end
 end

@@ -1,6 +1,9 @@
 defmodule Tino.Offer do
   use Tino.Web, :model
 
+  @autocomplete_fields ~w(name permalink)a
+  @select_fields ~w(id name permalink)a
+
   schema "offers" do
     field :name, :string
     field :permalink, :string
@@ -9,10 +12,12 @@ defmodule Tino.Offer do
     field :preview_url,  :string
     field :video_provider, :integer
     field :vast_version, :integer
+
     belongs_to :campaign, Tino.Campaign
     belongs_to :product, Tino.Product
     many_to_many :countries, Tino.Country, join_through: "countries_offers"
     many_to_many :purchase_orders, Tino.PurchaseOrder, join_through: "offer_shares", on_delete: :delete_all
+
     field :created_ts, :integer
     field :updated_ts, :integer
   end
@@ -25,5 +30,14 @@ defmodule Tino.Offer do
     |> cast(params, [:name, :permalink, :status, :offer_url, :preview_url, :video_provider, :vast_version, :created_ts, :updated_ts])
     #|> cast_assoc(params, [:campaign_id, :product_id,])
   end
+
+  def autocomplete_fields do
+    @autocomplete_fields
+  end
+
+  def select_fields do
+    @select_fields
+  end
+
 
 end
