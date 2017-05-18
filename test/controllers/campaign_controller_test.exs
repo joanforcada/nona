@@ -74,7 +74,7 @@ defmodule Tino.CampaignControllerTest do
       query_res = Repo.all(query)
       assert length(query_res) == 0
 
-      create_value = (C.insert_sample_row(%{"permalink" => "00000000", "name" => "cola 00"}))
+      C.insert_sample_row(%{"permalink" => "00000000", "name" => "cola 00"})
 
       query_res = Repo.all(query)
       assert length(query_res) == 1
@@ -90,11 +90,11 @@ defmodule Tino.CampaignControllerTest do
       query_res = Repo.all(query)
       assert length(query_res) == 1
       first_res = query_res
-        |> H.spit
+        #|> H.spit
         |> H.Map.stringify_keys
-        |> H.spit
+        #|> H.spit
         |> List.first
-        |> H.spit
+        #|> H.spit
       assert Map.get(res, "result", []) == first_res
 
     end

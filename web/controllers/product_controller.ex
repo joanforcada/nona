@@ -1,17 +1,16 @@
+require Alfred.Helpers, as: H
 defmodule Tino.ProductController do
   use Tino.Web, :controller
 
   alias Tino.Product
   alias Tino.Controllers.Common
 
-  @autocomplete_fields ~w(name code product_format)a
-  @select_fields ~w(id name code)a
-
-    def create(conn, %{"product" => product_params}) do
+  def create(conn, %{"product" => product_params}) do
 
       changeset = Product.changeset(%Product{}, product_params)
-      {:ok, %{model: Product, changeset: changeset, conn: conn}}
-      |>Common.add_create_result
+
+      {:ok, %{model: Product, changeset: changeset, conn: conn, select_fields: Product.select_fields}}
+        |>Common.add_create_result
 
     end
 
@@ -30,7 +29,7 @@ defmodule Tino.ProductController do
    def autocomplete(conn, %{"term" => term}) do
      term = "%#{term}%"
 
-    {:ok, %{model: Product, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
+    {:ok, %{model: Product, term: term, fields: Product.autocomplete_fields, select_fields: Product.select_fields, conn: conn}}
       |> Common.add_autocomplete_result
       |> build_response
 
