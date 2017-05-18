@@ -80,7 +80,6 @@ defmodule Tino.CampaignControllerTest do
       query_res = campaign_query(permalink)
       assert length(query_res) == 1
 
-
       # And the database record was increased by 1
       query_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(query_res) == 5
@@ -93,6 +92,7 @@ defmodule Tino.CampaignControllerTest do
       query_res = campaign_query(permalink)
       assert length(query_res) == 1
       first_res = Common.stringify_list(query_res)
+        |> List.first
       assert Map.get(res, "result", []) == first_res
     end
 

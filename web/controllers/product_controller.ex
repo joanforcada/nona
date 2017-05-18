@@ -1,3 +1,4 @@
+require Alfred.Helpers, as: H
 defmodule Tino.ProductController do
   use Tino.Web, :controller
 
@@ -5,11 +6,10 @@ defmodule Tino.ProductController do
   alias Tino.Controllers.Common
 
   def create(conn, %{"product" => product_params}) do
-
     changeset = Product.changeset(%Product{}, product_params)
-    {:ok, %{model: Product, changeset: changeset, conn: conn}}
-    |>Common.add_create_result
 
+    {:ok, %{model: Product, changeset: changeset, conn: conn, select_fields: Product.select_fields}}
+    |>Common.add_create_result
   end
 
   def show(conn, %{"id" => id}) do

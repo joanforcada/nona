@@ -78,7 +78,6 @@ defmodule Tino.OfferControllerTest do
     O.insert_sample_row(%{"permalink" => "00000001", "name" => "cola 99"})
 
     query_res = Repo.all(query)
-    H.spit(query_res)
     assert length(query_res) == 1
 
     Repo.delete_all(Offer)
@@ -96,11 +95,11 @@ defmodule Tino.OfferControllerTest do
       query_res = Repo.all(query)
       assert length(query_res) == 1
       first_res = query_res
-        |> H.spit
+        #|> H.spit
         |> H.Map.stringify_keys
-        |> H.spit
+        #|> H.spit
         |> List.first
-        |> H.spit
+        #|> H.spit
       assert Map.get(res, "result", []) == first_res
 
       #Repo.delete_all(Offer)

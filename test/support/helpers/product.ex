@@ -1,5 +1,5 @@
+require Alfred.Helpers, as: H
 defmodule Tino.Test.Helpers.Product do
-
   alias Tino.Product
   alias Tino.Repo
 
