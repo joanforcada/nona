@@ -4,12 +4,6 @@ defmodule Tino.PurchaseOrderController do
   alias Tino.PurchaseOrder
   alias Tino.Controllers.Common
 
-  #Fields which to look for when performing autocomplete
-  @autocomplete_fields  ~w(number description)a
-  # Fields to select from the database (for autocomplete only (for now))
-  @select_fields ~w(id number description)a
-
-
   def create(conn, %{"purchase_order" => purchase_order_params}) do
 
     changeset = PurchaseOrder.changeset(%PurchaseOrder{}, purchase_order_params)
@@ -40,7 +34,7 @@ defmodule Tino.PurchaseOrderController do
   def autocomplete(conn, %{"term" => term}) do
     term = "%#{term}%"
 
-   {:ok, %{model: PurchaseOrder, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
+   {:ok, %{model: PurchaseOrder, term: term, fields: PurchaseOrder.autocomplete_fields, select_fields: PurchaseOrder.select_fields, conn: conn}}
      |> Common.add_autocomplete_result
      |> build_response
 

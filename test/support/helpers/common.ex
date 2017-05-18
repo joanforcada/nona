@@ -17,4 +17,22 @@ defmodule Tino.Test.Helpers.Common do
       results -> results
     end
   end
+
+  def get_all_results(model, select_fields) do
+    query = from m in model, select: map(m, ^select_fields)
+    Repo.all(query)
+  end
+
+  def stringify_list([]), do: []
+
+  def stringify_list(list) when is_list(list) do
+    list
+    |> H.Map.stringify_keys
+  end
+
+  def stringify_element(map) when is_map(map) do
+    H.Map.stringify_keys(map)
+  end
+
+
 end

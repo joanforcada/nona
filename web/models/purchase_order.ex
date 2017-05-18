@@ -1,6 +1,11 @@
 defmodule Tino.PurchaseOrder do
   use Tino.Web, :model
 
+  #Fields which to look for when performing autocomplete
+  @autocomplete_fields  ~w(number description)a
+  # Fields to select from the database (for autocomplete only (for now))
+  @select_fields ~w(id number description)a
+
   schema "purchase_orders" do
     field :number, :string
     field :description, :string
@@ -23,5 +28,13 @@ defmodule Tino.PurchaseOrder do
     struct
     |> cast(params, [:number, :description, :amount, :order_type, :created_ts, :updated_ts])
   #  |> cast_assoc(params, [:campaign, :enterprise, :product, :country])
+  end
+
+  def autocomplete_fields do
+    @autocomplete_fields
+  end
+
+  def select_fields do
+    @select_fields
   end
 end

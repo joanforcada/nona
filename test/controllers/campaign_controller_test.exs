@@ -63,52 +63,86 @@ defmodule Tino.CampaignControllerTest do
   end
 
   describe "POST /create" do
-    test "create new value", %{conn: conn} do
-      create_new_action(conn)
+    test "create new valid value", %{conn: conn} do
+      # A valid params for a valid record
+      params = %{name: "a valid campaign", permalink: "91204393"}
+
+      # get the permalink for multiuse purposes
+      permalink = Map.get(params, :permalink, "")
+      # Check that the query has all the setup values (4 in this case)
+      query_res = Common.get_all_results(Campaign, Campaign.select_fields)
+      assert length(query_res) == 4
+
+      # Try to insert another value
+      C.insert_sample_row(%{"permalink" => permalink, "name" => Map.get(params, :name)})
+
+      # Check that the value has been inserted
+      query_res = campaign_query(permalink)
+      assert length(query_res) == 1
+
+
+      # And the database record was increased by 1
+      query_res = Common.get_all_results(Campaign, Campaign.select_fields)
+      assert length(query_res) == 5
+
+      # Delete and perform the insert through the controller
+      Repo.delete_all(Campaign)
+
+      res = controller_call(conn, params)
+
+      query_res = campaign_query(permalink)
+      assert length(query_res) == 1
+      first_res = Common.stringify_list(query_res)
+      assert Map.get(res, "result", []) == first_res
     end
 
+    test "create an invalid value", %{conn: conn} do
+      params = %{name: "a valid campaign", permalink: "91204393", created_ts: "somewhere in time and space...."}
 
-    defp create_new_action(conn) do
+      permalink = Map.get(params, :permalink, "")
+      query_res = Common.get_all_results(Campaign, Campaign.select_fields)
+      assert length(query_res) == 4
 
-      query = from c in Campaign, where: c.permalink == "00000000", select: map(c, ^Campaign.select_fields)
-      query_res = Repo.all(query)
+      C.insert_sample_row(%{"permalink" => permalink, "name" => Map.get(params, :name), "created_ts" => Map.get(params, :created_ts)})
+
+      query_res = campaign_query(permalink)
       assert length(query_res) == 0
 
-      create_value = (C.insert_sample_row(%{"permalink" => "00000000", "name" => "cola 00"}))
-
-      query_res = Repo.all(query)
-      assert length(query_res) == 1
+      query_res = Common.get_all_results(Campaign, Campaign.select_fields)
+      assert length(query_res) == 4
 
       Repo.delete_all(Campaign)
 
-      res = conn
-       |> post(campaign_path(conn, :create, %{"campaign" => %{name: "cola 00"}}))
-       |> response(200)
-       |> Poison.decode!
+      res = controller_call(conn, params)
 
-      query = from c in Campaign, select: map(c, ^Campaign.select_fields)
-      query_res = Repo.all(query)
-      assert length(query_res) == 1
-      first_res = query_res
-        |> H.spit
-        |> H.Map.stringify_keys
-        |> H.spit
-        |> List.first
-        |> H.spit
+      query_res = campaign_query(permalink)
+      assert length(query_res) == 0
+      first_res = Common.stringify_list(query_res)
       assert Map.get(res, "result", []) == first_res
+    end
 
+    # Campaign query for a single result
+    defp campaign_query(permalink) do
+      query = from c in Campaign, where: c.permalink == ^permalink, select: map(c, ^Campaign.select_fields)
+      Repo.all(query)
+    end
+
+    # Controller call for create
+    defp controller_call(conn, params) do
+      conn
+      |> post(campaign_path(conn, :create, %{"campaign" => params}))
+      |> response(200)
+      |> Poison.decode!
     end
   end
 
   describe "PUT /update" do
     test "update value", %{conn: conn} do
-      update_value("term", conn)
+
+      # update_value(conn)
     end
 
-    defp update_value(term, conn) do
-
-
-
+    defp update_value(conn, id, params) do
     end
   end
 

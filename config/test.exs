@@ -14,6 +14,6 @@ config :tino, Tino.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
   database: "tino_test",
-  password: "adman",
+  password: "dbPASS",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

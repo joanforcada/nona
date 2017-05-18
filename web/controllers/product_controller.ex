@@ -4,21 +4,18 @@ defmodule Tino.ProductController do
   alias Tino.Product
   alias Tino.Controllers.Common
 
-  @autocomplete_fields ~w(name code product_format)a
-  @select_fields ~w(id name code)a
+  def create(conn, %{"product" => product_params}) do
 
-    def create(conn, %{"product" => product_params}) do
+    changeset = Product.changeset(%Product{}, product_params)
+    {:ok, %{model: Product, changeset: changeset, conn: conn}}
+    |>Common.add_create_result
 
-      changeset = Product.changeset(%Product{}, product_params)
-      {:ok, %{model: Product, changeset: changeset, conn: conn}}
-      |>Common.add_create_result
+  end
 
-    end
-
-   def show(conn, %{"id" => id}) do
-     product = Repo.get!(Product, id)
-     render("show.json", product: product)
-   end
+  def show(conn, %{"id" => id}) do
+    product = Repo.get!(Product, id)
+    render("show.json", product: product)
+  end
 
    def update(conn, %{"id" => id, "params" => product_params}) do
 
@@ -30,7 +27,7 @@ defmodule Tino.ProductController do
    def autocomplete(conn, %{"term" => term}) do
      term = "%#{term}%"
 
-    {:ok, %{model: Product, term: term, fields: @autocomplete_fields, select_fields: @select_fields, conn: conn}}
+    {:ok, %{model: Product, term: term, fields: Product.autocomplete_fields, select_fields: Product.select_fields, conn: conn}}
       |> Common.add_autocomplete_result
       |> build_response
 
