@@ -8,6 +8,7 @@ defmodule Tino.ProductControllerTest do
   use ExUnit.Case
   use Tino.ConnCase, async: true
 
+
   alias Tino.Product
 
   setup do
@@ -132,12 +133,15 @@ defmodule Tino.ProductControllerTest do
     |> Poison.decode!
   end
 
+  def put_call(conn, id, params) do
+    conn
+    |> put(product_path(conn, :update, %{"id" =>id, "params" => params}))
+    |> response(200)
+    |> Poison.decode!
+  end
+
   describe "PUT /update" do
     test "update value", %{conn: conn} do
-      update_value("term", conn)
-    end
-
-    defp update_value(term, conn) do
 
     end
   end
