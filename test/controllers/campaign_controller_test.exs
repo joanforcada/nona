@@ -88,6 +88,9 @@ defmodule Tino.CampaignControllerTest do
       Repo.delete_all(Campaign)
 
       res = controller_call(conn, params)
+      assert Map.get(res, "valid")
+
+      assert length(Common.get_all_results(Campaign, Campaign.select_fields)) == 1
 
       query_res = Map.get(res, "result")
         |> Map.get("permalink")
@@ -117,19 +120,10 @@ defmodule Tino.CampaignControllerTest do
       Repo.delete_all(Campaign)
 
       res = controller_call(conn, params)
-
+      refute Map.get(res, "valid")
 
       query_res = campaign_query(permalink)
       assert length(query_res) == 0
-      first_res = Common.stringify_element(query_res)
-        |> List.first
-      assert Map.get(res, "result", []) == first_res
-    end
-
-    # Campaign query for a single result
-    defp campaign_query(permalink) do
-      query = from c in Campaign, where: c.permalink == ^permalink, select: map(c, ^Campaign.select_fields)
-      Repo.all(query)
     end
 
     # Controller call for create
@@ -149,6 +143,13 @@ defmodule Tino.CampaignControllerTest do
 
     defp update_value(conn, id, params) do
     end
+  end
+
+
+  # Campaign query for a single result
+  defp campaign_query(permalink) do
+    query = from c in Campaign, where: c.permalink == ^permalink, select: map(c, ^Campaign.select_fields)
+    Repo.all(query)
   end
 
 

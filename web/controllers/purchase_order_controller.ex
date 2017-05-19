@@ -7,8 +7,8 @@ defmodule Tino.PurchaseOrderController do
   def create(conn, %{"purchase_order" => purchase_order_params}) do
 
     changeset = PurchaseOrder.changeset(%PurchaseOrder{}, purchase_order_params)
-    {:ok, %{model: PurchaseOrder, changeset: changeset, conn: conn}}
-    |>Common.add_create_result
+    {:ok, %{model: PurchaseOrder, changeset: changeset, conn: conn, select_fields: PurchaseOrder.select_fields}}
+    |> Common.add_create_result
 
   end
 

@@ -35,12 +35,12 @@ defmodule Tino.Controllers.Common do
       {:ok, res} ->
         conn
         |> put_status(:update)
-        |> render("show.json", :model) #retornes plantilla
+        |> json(%{valid: true, result: res}) #retornes plantilla
 
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Tino.ChangesetView, "error.json", changeset: changeset)
+        |> json(%{valid: false, result: translate_errors(changeset)})
       end
   end
 
@@ -60,8 +60,12 @@ defmodule Tino.Controllers.Common do
 
       {:error, changeset} ->
         conn
-        |> json(%{valid: false, result: Enum.into(changeset.errors, %{})})
+        |> json(%{valid: false, result: translate_errors(changeset)})
     end
+  end
+
+  defp translate_errors(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, &Tino.ErrorHelpers.translate_error/1)
   end
 
   def errors do

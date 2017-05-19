@@ -1,7 +1,6 @@
 require Alfred.Helpers, as: H
 alias Tino.Test.Helpers.Product, as: Pr
 alias Tino.Test.Helpers.Common
-
 alias Tino.Repo
 import Ecto.Query
 
@@ -81,12 +80,16 @@ defmodule Tino.ProductControllerTest do
 
       Repo.delete_all(Product)
 
-      res = controller_call(conn, params)
+      res = post_call(conn, params)
+      assert Map.get(res, "valid")
+
+      all_res = Common.get_all_results(Product, Product.select_fields)
+      assert length(all_res) == 1
 
       query_res = product_query(code)
       assert length(query_res) == 1
       first_res = Common.stringify_element(query_res) |> List.first
-      assert Map.get(res, "result", []) == first_res
+      assert Map.get(res, "result") == first_res
     end
 
     test "create an invalid value", %{conn: conn} do
@@ -109,12 +112,11 @@ defmodule Tino.ProductControllerTest do
 
       Repo.delete_all(Product)
 
-      res = controller_call(conn, params)
+      res = post_call(conn, params)
+      refute Map.get(res, "valid")
 
       query_res = product_query(code)
       assert length(query_res) == 0
-      first_res = Common.stringify_element(query_res) |> List.first
-      assert Map.get(res, "result", []) == first_res
     end
   end
 
@@ -123,7 +125,7 @@ defmodule Tino.ProductControllerTest do
     Repo.all(query)
   end
 
-  defp controller_call(conn, params) do
+  defp post_call(conn, params) do
     conn
     |> post(product_path(conn, :create, %{"product" => params}))
     |> response(200)

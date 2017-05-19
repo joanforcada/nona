@@ -12,25 +12,17 @@ defmodule Tino.CountryControllerTest do
 
     Co.insert_sample_row(%{"name" => "france", "iso_code" => "44444444"})
     Co.insert_sample_row(%{"name" => "germany", "iso_code" => "45454545"})
-    Co.insert_sample_row(%{"name" => "germany", "iso_code" => "99994545"})
+    Co.insert_sample_row(%{"name" => "dublin", "iso_code" => "99994545"})
     Co.insert_sample_row(%{"name" => "Chile", "iso_code" => "33333333"})
 
   end
 
-  test "autocomplete campaign_cola results", %{conn: conn}  do
+  test "autocomplete campaign results", %{conn: conn}  do
 
-    autocomplete_action("cola", conn)
-    autocomplete_action("co", conn)
-    autocomplete_action("la", conn)
-  end
-
-  test "autocomplete purchase order results", %{conn: conn}  do
-
-    autocomplete_action("Video Seeding", conn)
-    autocomplete_action("seeding", conn)
-    autocomplete_action("video", conn)
-    autocomplete_action("vid", conn)
-    autocomplete_action("seed", conn)
+    autocomplete_action("fran", conn)
+    autocomplete_action("ger", conn)
+    autocomplete_action("dub", conn)
+    autocomplete_action("chil", conn)
 
   end
 
