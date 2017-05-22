@@ -26,9 +26,12 @@ defmodule Tino.CampaignController do
 
   def update(conn, %{"id" => id, "params" => campaign_params}) do
 
-      {:ok, %{id: id, model: Campaign, params: campaign_params, conn: conn}}
-      |> Common.add_update_result
-
+    case Repo.get!(Campaign, id) do
+      %Campaign{} = res ->
+        changeset = Campaign.changeset(res, campaign_params)
+        {:ok, %{changeset: changeset, conn: conn}}
+        |> Common.add_update_result
+    end
   end
 
   def autocomplete(conn, %{"term" => term}) do
@@ -46,5 +49,4 @@ defmodule Tino.CampaignController do
   def build_response({:ok, %{conn: conn, autocomplete_result: res}}) do
     json(conn, %{valid: true, result: res})
   end
-
 end

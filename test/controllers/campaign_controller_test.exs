@@ -68,7 +68,7 @@ defmodule Tino.CampaignControllerTest do
       params = %{name: "a valid campaign", permalink: "91204393"}
 
       # get the permalink for multiuse purposes
-      permalink = Map.get(params, :permalink)
+      permalink = Map.get(params, :permalink, "")
       # Check that the query has all the setup values (4 in this case)
       query_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(query_res) == 4
@@ -87,19 +87,18 @@ defmodule Tino.CampaignControllerTest do
       # Delete and perform the insert through the controller
       Repo.delete_all(Campaign)
 
-      res = controller_call(conn, params)
+
+      res = post_call(conn, params)
       assert Map.get(res, "valid")
 
-      assert length(Common.get_all_results(Campaign, Campaign.select_fields)) == 1
+      all_res = Common.get_all_results(Campaign, Campaign.select_fields)
+      assert length(all_res) == 1
 
-      query_res = Map.get(res, "result")
-        |> Map.get("permalink")
-        |> campaign_query
-
+      query_res = campaign_query(permalink)
       assert length(query_res) == 1
-      first_res = Common.stringify_element(query_res)
-        |> List.first
-      assert Map.get(res, "result", []) == first_res
+      first_res = Common.stringify_element(query_res) |> List.first
+      assert Map.get(res, "result") == first_res
+
     end
 
     test "create an invalid value", %{conn: conn} do
@@ -109,39 +108,44 @@ defmodule Tino.CampaignControllerTest do
       query_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(query_res) == 4
 
-      C.insert_sample_row(%{"permalink" => permalink, "name" => Map.get(params, :name), "created_ts" => Map.get(params, :created_ts)})
-
       query_res = campaign_query(permalink)
       assert length(query_res) == 0
 
+      C.insert_sample_row(%{"permalink" => permalink, "name" => Map.get(params, :name), "created_ts" => Map.get(params, :created_ts)})
+
+
+
       query_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(query_res) == 4
+      query_res = campaign_query(permalink)
+      assert length(query_res) == 0
 
       Repo.delete_all(Campaign)
 
-      res = controller_call(conn, params)
+      res = post_call(conn, params)
       refute Map.get(res, "valid")
 
       query_res = campaign_query(permalink)
       assert length(query_res) == 0
     end
-
-    # Controller call for create
-    defp controller_call(conn, params) do
-      conn
-      |> post(campaign_path(conn, :create, %{"campaign" => params}))
-      |> response(200)
-      |> Poison.decode!
-    end
   end
 
+    # Controller call for create
   describe "PUT /update" do
-    test "update value", %{conn: conn} do
+    test "update with valid params", %{conn: conn} do
+
+      params = %{name: "some name for a change", permalink: "00005555"}
+
+      H.spit params
+
+      campaign_id = campaign_query ("11111111")
+        |> List.first
+        |> Map.get(:id)
+      update_params = Map.put(params, :id, campaign_id)
 
       # update_value(conn)
-    end
 
-    defp update_value(conn, id, params) do
+      put_call(conn, update_params)
     end
   end
 
@@ -152,5 +156,17 @@ defmodule Tino.CampaignControllerTest do
     Repo.all(query)
   end
 
+  defp post_call(conn, params) do
+    conn
+    |> post(campaign_path(conn, :create, %{"campaign" => params}))
+    |> response(200)
+    |> Poison.decode!
+  end
 
+  def put_call(conn, params) do
+    conn
+    |> put(product_path(conn, :update, struct(Campaign, params)), %{campaign: params} )
+    |> response(200)
+    |> Poison.decode!
+  end
 end

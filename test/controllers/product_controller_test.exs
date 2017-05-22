@@ -138,6 +138,7 @@ defmodule Tino.ProductControllerTest do
       # |> put(product_path(conn, :update, update_params))
       # |> response(200)
       # |> Poison.decode!
+      
       put_call(conn, update_params)
     end
   end
