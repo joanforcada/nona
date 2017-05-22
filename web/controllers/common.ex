@@ -30,18 +30,21 @@ defmodule Tino.Controllers.Common do
   end
 
   def add_update_result({:ok, %{changeset: changeset, conn: conn}} ) do
-
-    case Repo.update(changeset) do
+    changes = changeset
+      |> touch_updated_ts
+    case Repo.update(changes) do
       {:ok, res} ->
+        result = Map.from_struct(res)
+          |> delete_sensitive_fields
         conn
-        |> put_status(:update)
-        |> json(%{valid: true, result: res}) #retornes plantilla
+        |> json(%{valid: true, result: result}) #retornes plantilla
 
       {:error, changeset} ->
+        H.spit changeset
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{valid: false, result: translate_errors(changeset)})
-      end
+    end
   end
 
 
@@ -63,6 +66,15 @@ defmodule Tino.Controllers.Common do
         |> json(%{valid: false, result: translate_errors(changeset)})
     end
   end
+
+  defp delete_sensitive_fields(val) when is_map(val) do
+    val
+    |> Map.delete(:__meta__)
+    |> Map.delete(:created_ts)
+    |> Map.delete(:updated_ts)
+  end
+
+  defp delete_sensitive_fields(val), do: val
 
   defp translate_errors(changeset) do
     Ecto.Changeset.traverse_errors(changeset, &Tino.ErrorHelpers.translate_error/1)

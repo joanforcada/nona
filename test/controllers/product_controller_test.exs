@@ -121,6 +121,27 @@ defmodule Tino.ProductControllerTest do
     end
   end
 
+  describe "PUT /update" do
+    test "update with valid params", %{conn: conn} do
+      # Update "Programmatic Native Video"
+      # update params (Mssing ID to update it)
+      params = %{name: "some name for a change", code: "snfac", product_format: "some other format"}
+      # Find Product ID
+      product_id = product_query("Pr_N")
+        |> List.first
+        |> Map.get(:id)
+      update_params = Map.put(params, :id, product_id)
+
+      # Put product ID inside params
+      # update_params = %{ id: product_id, params: params }
+      # conn
+      # |> put(product_path(conn, :update, update_params))
+      # |> response(200)
+      # |> Poison.decode!
+      put_call(conn, update_params)
+    end
+  end
+
   defp product_query(code) do
     query = from p in Product, where: p.code == ^code, select: map(p, ^Product.select_fields)
     Repo.all(query)
@@ -128,21 +149,15 @@ defmodule Tino.ProductControllerTest do
 
   defp post_call(conn, params) do
     conn
-    |> post(product_path(conn, :create, %{"product" => params}))
+    |> post(product_path(conn, :create), %{product: params})
     |> response(200)
     |> Poison.decode!
   end
 
-  def put_call(conn, id, params) do
+  def put_call(conn, params) do
     conn
-    |> put(product_path(conn, :update, %{"id" =>id, "params" => params}))
+    |> put(product_path(conn, :update, struct(Product, params)), %{product: params} )
     |> response(200)
     |> Poison.decode!
-  end
-
-  describe "PUT /update" do
-    test "update value", %{conn: conn} do
-
-    end
   end
 end
