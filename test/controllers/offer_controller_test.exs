@@ -90,7 +90,7 @@ defmodule Tino.OfferControllerTest do
 
       O.insert_sample_row(%{"permalink" => permalink, "name" => Map.get(params, :name)})
 
-      query_res = offer_query(permalink)
+      query_res = offer_query(permalink, Offer.select_fields)
       assert length(query_res) == 1
 
       query_res = Common.get_all_results(Offer, Offer.select_fields)
@@ -118,14 +118,14 @@ defmodule Tino.OfferControllerTest do
       permalink = Map.get(params, :permalink, "")
       query_res = Common.get_all_results(Offer, Offer.select_fields)
       assert length(query_res) == 4
-      query_res = offer_query(permalink)
+      query_res = offer_query(permalink, Offer.select_fields)
       assert length(query_res) == 0
 
       O.insert_sample_row(%{"permalink" => permalink, "name" => Map.get(params, :name), "vast_version" => Map.get(params, :vast_version)})
 
       query_res = Common.get_all_results(Offer, Offer.select_fields)
       assert length(query_res) == 4
-      query_res = offer_query(permalink)
+      query_res = offer_query(permalink, Offer.select_fields)
       assert length(query_res) == 0
 
       Repo.delete_all(Offer)
@@ -133,7 +133,7 @@ defmodule Tino.OfferControllerTest do
       res = post_call(conn, params)
       refute Map.get(res, "valid")
 
-      query_res = offer_query(permalink)
+      query_res = offer_query(permalink, Offer.select_fields)
       assert length(query_res) == 0
     end
   end
@@ -143,17 +143,20 @@ defmodule Tino.OfferControllerTest do
 
       params = %{permalink: "56565656", name: "volcano", status: "trafficking", offer_url: "www.admanmedia2.com"}
 
-      offer_id = offer_query("88885552")
-        |> List.first
-        |> Map.get(:id)
+      offer_id = offer_query("88885552") |> List.first |> Map.get(:id)
       update_params = Map.put(params, :id, offer_id)
 
       put_call(conn, update_params)
     end
   end
 
+  defp offer_query(permalink, select_fields) do
+    query = from o in Offer, where: o.permalink == ^permalink, select: map(o, ^select_fields)
+    Repo.all(query)
+  end
+
   defp offer_query(permalink) do
-    query = from o in Offer, where: o.permalink == ^permalink, select: map(o, ^Offer.select_fields)
+    query = from o in Offer, where: o.permalink == ^permalink
     Repo.all(query)
   end
 

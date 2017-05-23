@@ -24,6 +24,11 @@ defmodule Tino.Test.Helpers.Common do
     Repo.all(query)
   end
 
+  def get_all_results(model) do
+    query = from m in model
+    Repo.all(query)
+  end
+
   def stringify_list([]), do: []
 
   def stringify_element(element) do

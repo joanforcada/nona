@@ -94,7 +94,7 @@ defmodule Tino.CampaignControllerTest do
       C.insert_sample_row(%{"permalink" => permalink, "name" => Map.get(params, :name)})
 
       # Check that the value has been inserted
-      query_res = campaign_query(permalink)
+      query_res = campaign_query(permalink, Campaign.select_fields)
       assert length(query_res) == 1
 
       # And the database record was increased by 1
@@ -130,7 +130,7 @@ defmodule Tino.CampaignControllerTest do
       query_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(query_res) == 4
       # None with the permalink provided via params
-      query_res = campaign_query(permalink)
+      query_res = campaign_query(permalink, Campaign.select_fields)
       assert length(query_res) == 0
 
       # Insert row with the params
@@ -139,7 +139,7 @@ defmodule Tino.CampaignControllerTest do
       # Check that new row did not create
       query_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(query_res) == 4
-      query_res = campaign_query(permalink)
+      query_res = campaign_query(permalink, Campaign.select_fields)
       assert length(query_res) == 0
 
       # Wipe campaigns
@@ -159,26 +159,53 @@ defmodule Tino.CampaignControllerTest do
   describe "PUT /update" do
     test "update with valid params", %{conn: conn} do
 
-      params = %{name: "some name for a change", permalink: "00005555"}
+      params = %{name: "some name for a change"}
+      campaign = campaign_query("11111111") |> List.first
+      changeset = Campaign.changeset(campaign, params)
 
-      #H.spit params
+      res = Repo.update(changeset)
+      # Update successfully
+      assert elem(res, 0) == :ok
+      assert elem(res, 1) |> Map.get(:name) == Map.get(params, :name)
 
-      campaign_id = campaign_query("11111111")
-        |> List.first
-        |> Map.get(:id)
-      update_params = Map.put(params, :id, campaign_id)
-      # update_value(conn)
+      update_params = %{name: "The ultimate Campaign"} |> Map.put(:id, Map.get(campaign, :id))
 
-      put_call(conn, update_params)
+      res = put_call(conn, update_params)
+      assert Map.get(res, "valid")
+      assert Map.get(res, "result") |> Map.get("name") == Map.get(update_params, :name)
+    end
+
+    test "update with invalid params", %{conn: conn} do
+
+      params = %{name: "some name for a change", created_ts: "fjeaiojaofjoifj"}
+      campaign = campaign_query("11111111") |> List.first
+      changeset = Campaign.changeset(campaign, params)
+      refute changeset.valid?
+
+      res = Repo.update(changeset)
+      # Not updated, returned error instead
+      assert elem(res, 0) == :error
+      refute elem(res, 1) |> Map.get(:name) == Map.get(params, :name)
+
+      update_params = %{name: "The ultimate Campaign",  created_ts: "fjeaiojaofjoifj"} |> Map.put(:id, Map.get(campaign, :id))
+
+      # Put call with status expected (422 -> unprocessable_entity, URL and params are good, but the request contains invalid params)
+      res = put_call(conn, update_params, :unprocessable_entity)
+
+      refute Map.get(res, "valid")
     end
   end
 
 
   # Campaign query for a single result
-  defp campaign_query(permalink) do
-    query = from c in Campaign, where: c.permalink == ^permalink, select: map(c, ^Campaign.select_fields)
+  defp campaign_query(permalink, select_fields) do
+    query = from c in Campaign, where: c.permalink == ^permalink, select: map(c, ^select_fields)
     Repo.all(query)
+  end
 
+  defp campaign_query(permalink) do
+    query = from c in Campaign, where: c.permalink == ^permalink
+    Repo.all(query)
   end
 
   # Mock controller create action
@@ -194,6 +221,13 @@ defmodule Tino.CampaignControllerTest do
     conn
     |> put(campaign_path(conn, :update, struct(Campaign, params)), %{campaign: params} )
     |> response(200)
+    |> Poison.decode!
+  end
+
+  def put_call(conn, params, status) do
+    conn
+    |> put(campaign_path(conn, :update, struct(Campaign, params)), %{campaign: params} )
+    |> response(status)
     |> Poison.decode!
   end
 end
