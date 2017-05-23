@@ -18,6 +18,7 @@ defmodule Tino.ProductControllerTest do
     Pr.insert_sample_row(%{"code" => "Pr_N", "name" => "Programmatic Native Video"})
   end
 
+
   describe "GET /autocomplete" do
 
     @doc """
@@ -66,13 +67,7 @@ defmodule Tino.ProductControllerTest do
       assert res["result"] == "Param 'term' is required"
     end
 
-    @doc """
-      Dynamic query with provided autocomplete fields, table to look, term of search, and return fields
-      Common.build_results(<autocomplete_fields>, model, term, <select_fields>)
-      The return value is a JSON with atom keys, pass along to string
-      First, directly call the function to get expected result
-      Then mock controller action, expect same result
-    """
+
     defp autocomplete_action(term, conn) do
 
       query_res = Common.build_results(Product.autocomplete_fields, Product, term, Product.select_fields)

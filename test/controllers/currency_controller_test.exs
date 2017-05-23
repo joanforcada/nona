@@ -3,19 +3,20 @@ alias Tino.Test.Helpers.Currency, as: Cu
 alias Tino.Test.Helpers.Common
 
 defmodule Tino.CurrencyControllerTest do
-    use ExUnit.Case
-    use Tino.ConnCase
+  use ExUnit.Case
+  use Tino.ConnCase
 
-    alias Tino.Currency
+  alias Tino.Currency
 
-    setup do
+  setup do
 
-      Cu.insert_sample_row(%{"name" => "euro", "code" => "666", "symbol" => "€"})
-      Cu.insert_sample_row(%{"name" => "brazillian peso", "code" => "202", "symbol" => "$"})
-      Cu.insert_sample_row(%{"name" => "dolar", "code" => "205", "symbol" => "$"})
+    Cu.insert_sample_row(%{"name" => "euro", "code" => "666", "symbol" => "€"})
+    Cu.insert_sample_row(%{"name" => "brazillian peso", "code" => "202", "symbol" => "$"})
+    Cu.insert_sample_row(%{"name" => "dolar", "code" => "205", "symbol" => "$"})
 
-    end
+  end
 
+  describe "GET /autocomplete" do
     @doc """
     Autocomplete with the whole word, or part of it
     Result: %{"valid" => true, "result" => [%{"id" => <some_id>, "name" => "cola", "permalink" => "111111111"},
@@ -59,15 +60,8 @@ defmodule Tino.CurrencyControllerTest do
       assert res["valid"] == false
       assert res["result"] == "Param 'term' is required"
     end
-
-    @doc """
-      Dynamic query with provided autocomplete fields, table to look, term of search, and return fields
-      Common.build_results(<autocomplete_fields>, model, term, <select_fields>)
-      The return value is a JSON with atom keys, pass along to string
-      First, directly call the function to get expected result
-      Then mock controller action, expect same result
-    """
-    def autocomplete_action(term, conn) do
+  
+    defp autocomplete_action(term, conn) do
 
       fields = ~w(name code)a
       select_fields = ~w(id name code symbol)a
@@ -81,4 +75,5 @@ defmodule Tino.CurrencyControllerTest do
         |> Poison.decode!
       assert Map.get(res, "result", []) == query_res
     end
+  end
 end

@@ -66,13 +66,6 @@ defmodule Tino.OfferControllerTest do
       assert res["result"] == "Param 'term' is required"
     end
 
-    @doc """
-      Dynamic query with provided autocomplete fields, table to look, term of search, and return fields
-      Common.build_results(<autocomplete_fields>, model, term, <select_fields>)
-      The return value is a JSON with atom keys, pass along to string
-      First, directly call the function to get expected result
-      Then mock controller action, expect same result
-    """
     defp autocomplete_action(term, conn) do
 
       query_res = Common.build_results(Offer.autocomplete_fields, Offer, term, Offer.select_fields)
