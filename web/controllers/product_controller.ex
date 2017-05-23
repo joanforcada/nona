@@ -22,7 +22,7 @@ defmodule Tino.ProductController do
     case Repo.get!(Product, id) do
       %Product{} = res ->
         changeset = Product.changeset(res, product_params)
-        {:ok, %{changeset: changeset, conn: conn}}
+        {:ok, %{changeset: changeset, conn: conn, select_fields: Product.select_fields}}
         |> Common.add_update_result
     end
   end

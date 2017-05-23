@@ -23,7 +23,7 @@ defmodule Tino.PurchaseOrderController do
     case Repo.get!(PurchaseOrder, id) do
       %PurchaseOrder{} = res ->
         changeset = PurchaseOrder.changeset(res, purchase_order_params)
-        {:ok, %{changeset: changeset, conn: conn}}
+        {:ok, %{changeset: changeset, conn: conn, select_fields: PurchaseOrder.select_fields}}
         |> Common.add_update_result
     end
   end

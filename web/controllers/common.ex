@@ -29,13 +29,14 @@ defmodule Tino.Controllers.Common do
     end
   end
 
-  def add_update_result({:ok, %{changeset: changeset, conn: conn}} ) do
+  def add_update_result({:ok, %{changeset: changeset, conn: conn, select_fields: select_fields}} ) do
     changes = changeset
       |> touch_updated_ts
     case Repo.update(changes) do
       {:ok, res} ->
         result = Map.from_struct(res)
           |> delete_sensitive_fields
+          |> Map.take(select_fields)
         conn
         |> json(%{valid: true, result: result}) #retornes plantilla
 

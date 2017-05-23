@@ -24,12 +24,14 @@ defmodule Tino.OfferController do
 
   end
 
-  def update(conn, %{"id" => id, "params" => offer_params}) do
+  def update(conn, %{"id" => id, "offer" => offer_params}) do
 
-      {:ok, %{id: id, model: Offer, params: offer_params, conn: conn}}
-      |> Common.add_update_result
-
-
+    case Repo.get!(Offer, id) do
+      %Offer{} = res ->
+        changeset = Offer.changeset(res, offer_params)
+        {:ok, %{changeset: changeset, conn: conn, select_fields: Offer.select_fields}}
+        |> Common.add_update_result
+    end
   end
 
   def autocomplete(conn, %{"term" => term}) do

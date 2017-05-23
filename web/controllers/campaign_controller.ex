@@ -29,7 +29,7 @@ defmodule Tino.CampaignController do
     case Repo.get!(Campaign, id) do
       %Campaign{} = res ->
         changeset = Campaign.changeset(res, campaign_params)
-        {:ok, %{changeset: changeset, conn: conn}}
+        {:ok, %{changeset: changeset, conn: conn, select_fields: Campaign.select_fields}}
         |> Common.add_update_result
     end
   end

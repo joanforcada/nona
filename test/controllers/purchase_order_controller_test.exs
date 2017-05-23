@@ -152,10 +152,10 @@ defmodule Tino.PurchaseOrderControllerTest do
     |> Poison.decode!
   end
 
-  def put_call(conn, params) do
+  defp put_call(conn, params) do
     conn
     |> put(purchase_order_path(conn, :update, struct(PurchaseOrder, params)), %{purchase_order: params} )
     |> response(200)
-    |> Posion.decode!
+    |> Poison.decode!
   end
 end
