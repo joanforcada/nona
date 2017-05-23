@@ -18,12 +18,14 @@ defmodule Tino.PurchaseOrderController do
 
   end
 
-  def update(conn, %{"id" => id, "params" => purchase_order_params}) do
+  def update(conn, %{"id" => id, "purchase_order" => purchase_order_params}) do
 
-      {:ok, %{id: id, model: PurchaseOrder, params: purchase_order_params, conn: conn}}
-      |> Common.add_update_result
-
-
+    case Repo.get!(PurchaseOrder, id) do
+      %PurchaseOrder{} = res ->
+        changeset = PurchaseOrder.changeset(res, purchase_order_params)
+        {:ok, %{changeset: changeset, conn: conn}}
+        |> Common.add_update_result
+    end
   end
   @doc """
     Searches in the database for any matches with the parameter term from the URL

@@ -87,7 +87,7 @@ defmodule Tino.PurchaseOrderControllerTest do
       # Delete and perform the insert through the controller
       Repo.delete_all(PurchaseOrder)
 
-      res = controller_call(conn, params)
+      res = post_call(conn, params)
       assert Map.get(res, "valid")
 
       query_res = Map.get(res, "result")
@@ -106,35 +106,56 @@ defmodule Tino.PurchaseOrderControllerTest do
       number = Map.get(params, :number, "")
       query_res = Common.get_all_results(PurchaseOrder, PurchaseOrder.select_fields)
       assert length(query_res) == 4
-
-      Po.insert_sample_row(%{"number" => number, "description" => Map.get(params, :description), "created_ts" => Map.get(params, :created_ts), "amount" => Map.get(params, :amount)})
-
       query_res = purchase_order_query(number)
       assert length(query_res) == 0
 
+      Po.insert_sample_row(%{"number" => number, "description" => Map.get(params, :description), "created_ts" => Map.get(params, :created_ts), "amount" => Map.get(params, :amount)})
+
       query_res = Common.get_all_results(PurchaseOrder, PurchaseOrder.select_fields)
       assert length(query_res) == 4
+      query_res = purchase_order_query(number)
+      assert length(query_res) == 0
 
       Repo.delete_all(PurchaseOrder)
 
-      res = controller_call(conn, params)
+      res = post_call(conn, params)
       refute Map.get(res, "valid")
 
       query_res = purchase_order_query(number)
       assert length(query_res) == 0
     end
+  end
 
+  describe "PUT /update" do
+    test "update with valid params", %{conn: conn} do
+
+      params = %{description: "some name for a change", number: "95266363", product_format: "some other format"}
+
+      purchase_id = purchase_order_query("99995333")
+        |> List.first
+        |> Map.get(:id)
+      update_params = Map.put(params, :id, purchase_id)
+
+      put_call(conn, update_params)
+    end
+  end
+
+  defp purchase_order_query(number) do
+    query = from po in PurchaseOrder, where: po.number == ^number, select: map(po, ^PurchaseOrder.select_fields)
+    Repo.all(query)
+  end
     # Controller call for create
-    defp controller_call(conn, params) do
-      conn
-      |> post(purchase_order_path(conn, :create, %{"purchase_order" => params}))
-      |> response(200)
-      |> Poison.decode!
-    end
+  defp post_call(conn, params) do
+    conn
+    |> post(purchase_order_path(conn, :create, %{"purchase_order" => params}))
+    |> response(200)
+    |> Poison.decode!
+  end
 
-    defp purchase_order_query(number) do
-      query = from po in PurchaseOrder, where: po.number == ^number, select: map(po, ^PurchaseOrder.select_fields)
-      Repo.all(query)
-    end
+  def put_call(conn, params) do
+    conn
+    |> put(purchase_order_path(conn, :update, struct(PurchaseOrder, params)), %{purchase_order: params} )
+    |> response(200)
+    |> Posion.decode!
   end
 end

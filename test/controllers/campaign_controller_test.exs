@@ -1,7 +1,6 @@
 require Alfred.Helpers, as: H
 alias Tino.Test.Helpers.Campaign, as: C
 alias Tino.Test.Helpers.Common
-
 alias Tino.Repo
 import Ecto.Query
 
@@ -80,25 +79,27 @@ defmodule Tino.CampaignControllerTest do
       query_res = campaign_query(permalink)
       assert length(query_res) == 1
 
+      #H.spit query_res
       # And the database record was increased by 1
       query_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(query_res) == 5
 
+      #H.spit query_res
+
       # Delete and perform the insert through the controller
       Repo.delete_all(Campaign)
 
+      #H.spit query_res
+      all_res = Common.get_all_results(Campaign, Campaign.select_fields)
+      assert length(all_res) == 0
 
       res = post_call(conn, params)
       assert Map.get(res, "valid")
 
       all_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(all_res) == 1
-
-      query_res = campaign_query(permalink)
-      assert length(query_res) == 1
-      first_res = Common.stringify_element(query_res) |> List.first
+      first_res = Common.stringify_element(all_res) |> List.first
       assert Map.get(res, "result") == first_res
-
     end
 
     test "create an invalid value", %{conn: conn} do
@@ -107,7 +108,6 @@ defmodule Tino.CampaignControllerTest do
       permalink = Map.get(params, :permalink, "")
       query_res = Common.get_all_results(Campaign, Campaign.select_fields)
       assert length(query_res) == 4
-
       query_res = campaign_query(permalink)
       assert length(query_res) == 0
 
@@ -136,13 +136,12 @@ defmodule Tino.CampaignControllerTest do
 
       params = %{name: "some name for a change", permalink: "00005555"}
 
-      H.spit params
+      #H.spit params
 
-      campaign_id = campaign_query ("11111111")
+      campaign_id = campaign_query("11111111")
         |> List.first
         |> Map.get(:id)
       update_params = Map.put(params, :id, campaign_id)
-
       # update_value(conn)
 
       put_call(conn, update_params)
@@ -154,6 +153,7 @@ defmodule Tino.CampaignControllerTest do
   defp campaign_query(permalink) do
     query = from c in Campaign, where: c.permalink == ^permalink, select: map(c, ^Campaign.select_fields)
     Repo.all(query)
+
   end
 
   defp post_call(conn, params) do
@@ -165,7 +165,7 @@ defmodule Tino.CampaignControllerTest do
 
   def put_call(conn, params) do
     conn
-    |> put(product_path(conn, :update, struct(Campaign, params)), %{campaign: params} )
+    |> put(campaign_path(conn, :update, struct(Campaign, params)), %{campaign: params} )
     |> response(200)
     |> Poison.decode!
   end

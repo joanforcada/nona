@@ -24,7 +24,7 @@ defmodule Tino.CampaignController do
 
   end
 
-  def update(conn, %{"id" => id, "params" => campaign_params}) do
+  def update(conn, %{"id" => id, "campaign" => campaign_params}) do
 
     case Repo.get!(Campaign, id) do
       %Campaign{} = res ->

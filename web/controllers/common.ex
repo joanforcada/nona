@@ -40,7 +40,7 @@ defmodule Tino.Controllers.Common do
         |> json(%{valid: true, result: result}) #retornes plantilla
 
       {:error, changeset} ->
-        H.spit changeset
+        #H.spit changests
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{valid: false, result: translate_errors(changeset)})

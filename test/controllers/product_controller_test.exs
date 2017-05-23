@@ -87,7 +87,10 @@ defmodule Tino.ProductControllerTest do
       all_res = Common.get_all_results(Product, Product.select_fields)
       assert length(all_res) == 1
 
+      #H.spit all_res
+
       query_res = product_query(code)
+      #H.spit query_res
       assert length(query_res) == 1
       first_res = Common.stringify_element(query_res) |> List.first
       assert Map.get(res, "result") == first_res
@@ -111,6 +114,7 @@ defmodule Tino.ProductControllerTest do
       query_res = product_query(code)
       assert length(query_res) == 0
 
+
       Repo.delete_all(Product)
 
       res = post_call(conn, params)
@@ -127,10 +131,14 @@ defmodule Tino.ProductControllerTest do
       # update params (Mssing ID to update it)
       params = %{name: "some name for a change", code: "snfac", product_format: "some other format"}
       # Find Product ID
+      #H.spit params
+
       product_id = product_query("Pr_N")
         |> List.first
         |> Map.get(:id)
       update_params = Map.put(params, :id, product_id)
+
+      #H.spit update_params
 
       # Put product ID inside params
       # update_params = %{ id: product_id, params: params }
@@ -138,7 +146,7 @@ defmodule Tino.ProductControllerTest do
       # |> put(product_path(conn, :update, update_params))
       # |> response(200)
       # |> Poison.decode!
-      
+
       put_call(conn, update_params)
     end
   end
@@ -150,7 +158,7 @@ defmodule Tino.ProductControllerTest do
 
   defp post_call(conn, params) do
     conn
-    |> post(product_path(conn, :create), %{product: params})
+    |> post(product_path(conn, :create, %{"product" => params}))
     |> response(200)
     |> Poison.decode!
   end

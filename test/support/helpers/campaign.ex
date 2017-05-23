@@ -13,7 +13,7 @@ defmodule Tino.Test.Helpers.Campaign do
   end
 
   def insert_sample_row(data \\ []) do
-    row = data |> get_sample_row
+    row = get_sample_row data
     changeset = Campaign.changeset(%Campaign{}, row)
     Repo.insert(changeset)
     row
