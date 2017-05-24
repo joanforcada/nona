@@ -11,12 +11,14 @@ defmodule Tino.PurchaseOrderControllerTest do
   alias Tino.PurchaseOrder
 
   setup do
+    # Populate the database with some fake data
     Po.insert_sample_row(%{"amount" => 3.00134524, "number" => "99993333"})
-    Po.insert_sample_row(%{"amount" => 983.4534524352, "number" => "99994333"})
-    Po.insert_sample_row(%{"amount" => 9022.45242, "number" => "99995333"})
-    Po.insert_sample_row(%{"amount" => 55.524253446225, "number" => "99996333"})
+    Po.insert_sample_row(%{"amount" => 983.4534524352, "number" => "99943333"})
+    Po.insert_sample_row(%{"amount" => 9022.45242, "number" => "99953333"})
+    Po.insert_sample_row(%{"amount" => 55.524253446225, "number" => "99963333"})
   end
 
+    # Example URL: purchase_orders/autocomplete?term=cola
   describe "GET /autocomplete" do
     @doc """
       Autocomplete with the whole word, or part of it
@@ -26,11 +28,9 @@ defmodule Tino.PurchaseOrderControllerTest do
     """
     test "autocomplete purchase order results", %{conn: conn}  do
 
-      autocomplete_action("Video Seeding", conn)
-      autocomplete_action("seeding", conn)
-      autocomplete_action("video", conn)
-      autocomplete_action("vid", conn)
-      autocomplete_action("seed", conn)
+      autocomplete_action("99993333", conn)
+      autocomplete_action("3333", conn)
+      autocomplete_action("999", conn)
 
     end
 
@@ -85,7 +85,7 @@ defmodule Tino.PurchaseOrderControllerTest do
       params = %{description: "a valid purchase_order", number: "91204393", amount: 42598}
 
       # get the number for multiuse purposes
-      number = Map.get(params, :number)
+      number = Map.get(params, :number, "")
       # Check that the query has all the setup values (4 in this case)
       query_res = Common.get_all_results(PurchaseOrder, PurchaseOrder.select_fields)
       assert length(query_res) == 4
@@ -107,14 +107,12 @@ defmodule Tino.PurchaseOrderControllerTest do
       res = post_call(conn, params)
       assert Map.get(res, "valid")
 
-      query_res = Map.get(res, "result")
-        |> Map.get("number")
-        |> purchase_order_query
-
-      assert length(query_res) == 1
-      first_res = Common.stringify_element(query_res)
-        |> List.first
-      assert Map.get(res, "result", []) == first_res
+      # The only value in the database should be the one inserted by the controller
+      all_res = Common.get_all_results(PurchaseOrder, PurchaseOrder.select_fields)
+      assert length(all_res) == 1
+      # Check the result is the same
+      first_res = Common.stringify_element(all_res) |> List.first
+      assert Map.get(res, "result") == first_res
     end
 
     test "create an invalid value", %{conn: conn} do
@@ -146,19 +144,51 @@ defmodule Tino.PurchaseOrderControllerTest do
   describe "PUT /update" do
     test "update with valid params", %{conn: conn} do
 
-      params = %{description: "some name for a change", number: "95266363", product_format: "some other format"}
+      params = %{description: "some description for a change"}
+      purchase_order = purchase_order_query("99993333") |> List.first
+      changeset = PurchaseOrder.changeset(purchase_order, params)
 
-      purchase_id = purchase_order_query("99995333")
-        |> List.first
-        |> Map.get(:id)
-      update_params = Map.put(params, :id, purchase_id)
+      res = Repo.update(changeset)
+      # Update successfully
+      assert elem(res, 0) == :ok
+      assert elem(res, 1) |> Map.get(:description) == Map.get(params, :description)
 
-      put_call(conn, update_params)
+      update_params = %{description: "The ultimate Purchase Order"} |> Map.put(:id, Map.get(purchase_order, :id))
+
+      res = put_call(conn, update_params)
+      assert Map.get(res, "valid")
+      assert Map.get(res, "result") |> Map.get("description") == Map.get(update_params, :description)
+    end
+
+    test "update with invalid params", %{conn: conn} do
+
+      params = %{description: "some description for a change", created_ts: "fjeaiojaofjoifj"}
+      purchase_order = purchase_order_query("99993333") |> List.first
+      changeset = PurchaseOrder.changeset(purchase_order, params)
+      refute changeset.valid?
+
+      res = Repo.update(changeset)
+      # Not updated, returned error instead
+      assert elem(res, 0) == :error
+      refute elem(res, 1).valid?
+      refute elem(res, 1).errors |> Enum.empty?
+
+      update_params = %{description: "The ultimate Purchase Order",  created_ts: "fjeaiojaofjoifj"} |> Map.put(:id, Map.get(purchase_order, :id))
+
+      # Put call with status expected (422 -> unprocessable_entity, URL and params are good, but the request contains invalid params)
+      res = put_call(conn, update_params, :unprocessable_entity)
+
+      refute Map.get(res, "valid")
     end
   end
 
+  defp purchase_order_query(number, select_fields) do
+    query = from po in PurchaseOrder, where: po.number == ^number, select: map(po, ^select_fields)
+    Repo.all(query)
+  end
+
   defp purchase_order_query(number) do
-    query = from po in PurchaseOrder, where: po.number == ^number, select: map(po, ^PurchaseOrder.select_fields)
+    query = from po in PurchaseOrder, where: po.number == ^number
     Repo.all(query)
   end
     # Controller call for create
@@ -173,6 +203,13 @@ defmodule Tino.PurchaseOrderControllerTest do
     conn
     |> put(purchase_order_path(conn, :update, struct(PurchaseOrder, params)), %{purchase_order: params} )
     |> response(200)
+    |> Poison.decode!
+  end
+
+  def put_call(conn, params, status) do
+    conn
+    |> put(purchase_order_path(conn, :update, struct(PurchaseOrder, params)), %{purchase_order: params} )
+    |> response(status)
     |> Poison.decode!
   end
 end

@@ -103,10 +103,6 @@ defmodule Tino.CampaignControllerTest do
 
       # Delete and perform the insert through the controller
       Repo.delete_all(Campaign)
-
-      all_res = Common.get_all_results(Campaign, Campaign.select_fields)
-      assert length(all_res) == 0
-
       # Mock the controller action
       res = post_call(conn, params)
       # Check the insert performed successfully
@@ -185,7 +181,8 @@ defmodule Tino.CampaignControllerTest do
       res = Repo.update(changeset)
       # Not updated, returned error instead
       assert elem(res, 0) == :error
-      refute elem(res, 1) |> Map.get(:name) == Map.get(params, :name)
+      refute elem(res, 1).valid?
+      refute elem(res, 1).errors |> Enum.empty?
 
       update_params = %{name: "The ultimate Campaign",  created_ts: "fjeaiojaofjoifj"} |> Map.put(:id, Map.get(campaign, :id))
 
