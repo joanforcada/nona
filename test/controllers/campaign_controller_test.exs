@@ -158,6 +158,7 @@ defmodule Tino.CampaignControllerTest do
       params = %{name: "some name for a change"}
       campaign = campaign_query("11111111") |> List.first
       changeset = Campaign.changeset(campaign, params)
+      assert changeset.valid?
 
       res = Repo.update(changeset)
       # Update successfully
@@ -184,13 +185,13 @@ defmodule Tino.CampaignControllerTest do
       refute elem(res, 1).valid?
       refute elem(res, 1).errors |> Enum.empty?
 
-      update_params = %{name: "The ultimate Campaign",  created_ts: "fjeaiojaofjoifj"} |> Map.put(:id, Map.get(campaign, :id))
+      update_params = %{name: "A blast",  created_ts: "fjeaiojaofjoifj"} |> Map.put(:id, Map.get(campaign, :id))
 
       # Put call with status expected (422 -> unprocessable_entity, URL and params are good, but the request contains invalid params)
       res = put_call(conn, update_params, :unprocessable_entity)
 
       refute Map.get(res, "valid")
-    end
+    end  
   end
 
 
